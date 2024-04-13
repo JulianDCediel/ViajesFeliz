@@ -11,11 +11,15 @@ import java.util.Base64;
 import java.util.List;
 import modelo.Empleado;
 import modelo.EmpleadoDAO;
+import modelo.Usuario;
+import modelo.UsuarioDAO;
 
 public class Controlador extends HttpServlet {
 
     Empleado em = new Empleado();
     EmpleadoDAO edao = new EmpleadoDAO();
+    Usuario us = new Usuario();
+    UsuarioDAO cdao = new UsuarioDAO();
     int ide;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -28,6 +32,9 @@ public class Controlador extends HttpServlet {
         }
         if (menu.equals("PrincipalUsu")) {
             request.getRequestDispatcher("principalUsu.jsp").forward(request, response);
+        }
+        if (menu.equals("Registrarse")) {
+            request.getRequestDispatcher("registro.jsp").forward(request, response);
         }
         if (menu.equals("Empleado")) {
             switch (accion) {
@@ -87,6 +94,29 @@ public class Controlador extends HttpServlet {
                     throw new AssertionError();
             }
             request.getRequestDispatcher("empleado.jsp").forward(request, response);
+        }
+        if (menu.equals("Usuario")) {
+            switch (accion) {
+                case "Listar":
+                    List<Usuario> lista = cdao.listar();
+                    request.setAttribute("Clientes", lista);
+                    break;
+                case "Ver":
+                    ide = Integer.parseInt(request.getParameter("id"));
+                    Usuario c = cdao.listarId(ide);
+                    request.setAttribute("Cliente", c);
+                    request.getRequestDispatcher("Controlador?menu=Usuario&accion=Listar").forward(request, response);
+                    break;
+                case "Delete":
+                    ide = Integer.parseInt(request.getParameter("id"));
+                    cdao.delete(ide);
+                    request.getRequestDispatcher("Controlador?menu=Usuario&accion=Listar").forward(request, response);
+                    break;
+
+                default:
+                    throw new AssertionError();
+            }
+            request.getRequestDispatcher("Usuario.jsp").forward(request, response);
         }
     }
 

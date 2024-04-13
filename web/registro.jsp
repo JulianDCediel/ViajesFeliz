@@ -1,7 +1,6 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8">
@@ -14,30 +13,33 @@
     </head>
     <body>
         <div class="registration-form">
-            <form>
+            <form action="Validar" method="post">
                 <div class="form-icon">
                     <span><i class="icon icon-user"></i></span>
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control item" id="nombres" placeholder="Nombres">
+                    <input type="text" class="form-control item" id="nombres" name="nombres"required="" placeholder="Nombres">
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control item" id="apellidos" placeholder="Apellidos">
+                    <input type="text" class="form-control item" id="apellidos" name="apellidos"required=" "placeholder="Apellidos">
                 </div>
                 <div class="form-group">
-                    <input type="number" class="form-control item" id="cedula" placeholder="Cedula">
+                    <input type="number" class="form-control item" id="cedula" name="cedula"required="" placeholder="Cedula">
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control item" id="birth-date" placeholder="Direccion">
+                    <input type="text" class="form-control item" id="Direccion" name="Direccion"required=" "placeholder="Direccion">
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control item" id="email" placeholder="Email">
+                    <input type="email" class="form-control item" id="email" name="email"required=""placeholder="Email">
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control item" id="password" placeholder="Password">
+                    <input type="text" class="form-control item" id="nac" name="nac"required=""placeholder="Nacionalidad">
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-block create-account">Create Account</button>
+                    <input type="password" class="form-control item" id="password" name="password"required="" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-block create-account" name="accion" value="Registro" type="submit">Create Account</button>
                 </div>
             </form>
             <div class="social-media">
