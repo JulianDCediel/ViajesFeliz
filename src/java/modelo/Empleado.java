@@ -4,12 +4,9 @@
  */
 package modelo;
 
-/**
- *
- * @author User
- */
 public class Empleado {
-        int ced;
+
+    int ced;
     String nom, apell, correo, contra;
 
     public Empleado() {
@@ -62,5 +59,5 @@ public class Empleado {
     public void setContra(String contra) {
         this.contra = contra;
     }
-    
+
 }

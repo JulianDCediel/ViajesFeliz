@@ -1,17 +1,31 @@
 @import url('https://fonts.googleapis.com/css?family=Oswald:500');
 
-body{
-    background-color: #efeff1;
+/* Estilos para el contenedor del fondo */
+.fondo-dividido {
+    position: relative;
+    display: flex;
+    min-height: 100vh; /* Asegúrate de que el contenedor ocupe toda la altura de la pantalla */
 }
-.back{
-    position: fixed;
-    left: 40%;
-    top: 0;
-    width: 60%;
-    height: 100%;
-    background:url(https://res.cloudinary.com/dci1eujqw/image/upload/v1616769558/Codepen/waldemar-brandt-aThdSdgx0YM-unsplash_cnq4sb.jpg) no-repeat top center #efeff1;
-    background-size:cover;
+.elemento-encima {
+    position: absolute;
+    top: 20px; /* Ajusta la distancia desde la parte superior del contenedor */
+    left: 20px; /* Ajusta la distancia desde el lado izquierdo del contenedor */
+    z-index: 10; /* Asegúrate de que tenga un z-index más alto que el fondo */
 }
+/* Estilos para la mitad con la imagen */
+.mitad-imagen {
+    flex: 1.5; /* Ocupa la mitad del espacio disponible */
+    background-image: url('https://res.cloudinary.com/dci1eujqw/image/upload/v1616769558/Codepen/waldemar-brandt-aThdSdgx0YM-unsplash_cnq4sb.jpg'); /* Asegúrate de poner la ruta correcta a tu imagen */
+    background-size: cover; /* Asegúrate de que la imagen cubra toda la sección */
+    background-position: center; /* Centra la imagen */
+}
+
+/* Estilos para la mitad con el color */
+.mitad-color {
+    flex: 1; /* Ocupa la mitad del espacio disponible */
+    background-color: #efeff1; /* Reemplaza #tuColor con el código de color que prefieras */
+}
+
 .thx{
     position: fixed;
     left:30%;
@@ -45,7 +59,6 @@ h3{
     font-family: 'Oswald', sans-serif;
     color:#82bafa;
     font-size:45px;
-    padding-top:2%;
     padding-left:4%;
 }
 nav ul {
