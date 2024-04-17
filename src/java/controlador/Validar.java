@@ -17,7 +17,7 @@ import modelo.UsuarioDAO;
 public class Validar extends HttpServlet {
 
     EmpleadoDAO edao = new EmpleadoDAO();
-    Empleado em = new Empleado();
+    static Empleado em = new Empleado();
     Usuario us = new Usuario();
     UsuarioDAO cdao = new UsuarioDAO();
 

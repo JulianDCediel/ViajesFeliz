@@ -7,6 +7,20 @@
     <servlet>
         <servlet-name>Controlador</servlet-name>
         <servlet-class>controlador.Controlador</servlet-class>
+        <multipart-config>
+            <location>/tmp</location>
+            <max-file-size>20848820</max-file-size>
+            <max-request-size>418018841</max-request-size>
+            <file-size-threshold>1048576</file-size-threshold>
+        </multipart-config>
+    </servlet>
+    <servlet>
+        <servlet-name>ControladorIMG</servlet-name>
+        <servlet-class>controlador.ControladorIMG</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ControladorIm</servlet-name>
+        <servlet-class>controlador.ControladorIm</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Valid</servlet-name>
@@ -15,5 +29,13 @@
     <servlet-mapping>
         <servlet-name>Controlador</servlet-name>
         <url-pattern>/Controlador</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ControladorIMG</servlet-name>
+        <url-pattern>/ControladorIMG</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ControladorIm</servlet-name>
+        <url-pattern>/ControladorIm</url-pattern>
     </servlet-mapping>
 </web-app>

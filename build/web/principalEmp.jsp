@@ -17,7 +17,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a style="margin-left: 10px; border: none" class="btn btn-outline-light" href="#" target="myFrame">Alojamientos</a>
+                        <a style="margin-left: 10px; border: none" class="btn btn-outline-light" href="Controlador?menu=Alojamiento&accion=Listar" target="myFrame">Alojamientos</a>
                     </li>
 
                     <li class="nav-item">
@@ -50,7 +50,7 @@
             </div>
         </nav>
 
-        <div class="m-4" style="height: 650px">
+        <div class="m-4"  style="height: 900px">
             <iframe name="myFrame" style="height: 100%; width: 100%; border: none"></iframe>    
         </div>
 

@@ -2,25 +2,36 @@ package controlador;
 
 import java.io.IOException;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.List;
+import modelo.Alojamiento;
+import modelo.AlojamientoDAO;
 import modelo.Empleado;
 import modelo.EmpleadoDAO;
+import modelo.Foto;
 import modelo.Usuario;
 import modelo.UsuarioDAO;
 
+@MultipartConfig
 public class Controlador extends HttpServlet {
 
     Empleado em = new Empleado();
     EmpleadoDAO edao = new EmpleadoDAO();
     Usuario us = new Usuario();
     UsuarioDAO cdao = new UsuarioDAO();
+    Alojamiento al = new Alojamiento();
+    AlojamientoDAO adao = new AlojamientoDAO();
+    Foto fo = new Foto();
     int ide;
+    String idd;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -117,6 +128,51 @@ public class Controlador extends HttpServlet {
                     throw new AssertionError();
             }
             request.getRequestDispatcher("Usuario.jsp").forward(request, response);
+        }
+        if (menu.equals("Alojamiento")) {
+            switch (accion) {
+                case "Listar":
+                    List<Alojamiento> lista = adao.listar();
+                    request.setAttribute("Alojamientos", lista);
+                    break;
+                case "Add":
+                    String Direccion = request.getParameter("direccion");
+                    int np = Integer.parseInt(request.getParameter("personas"));
+                    int nb = Integer.parseInt(request.getParameter("banos"));
+                    int nh = Integer.parseInt(request.getParameter("hab"));
+                    String t = request.getParameter("tipo");
+                    int prm = Integer.parseInt(request.getParameter("precio"));
+                    String ma = request.getParameter("mascotas");
+                    String ca = request.getParameter("ca");
+                    ;
+                    al.setDireccion(Direccion);
+                    al.setCed_emp(Validar.em.getCed());
+                    al.setN_personas(np);
+                    al.setN_baños(nb);
+                    al.setN_habitaciones(nh);
+                    al.setTipo(t);
+                    al.setP_min(prm);
+                    al.setMascotas(ma);
+                    al.setCal_aire(ca);
+                    System.out.println(al.getDireccion() + "uuuuuuuuuuuuuu");
+                    adao.agregar(al);
+                    request.getRequestDispatcher("Controlador?menu=Alojamiento&accion=Listar").forward(request, response);
+                    break;
+                case "AddIm":
+                    Part filePart = request.getPart("fotos");
+                    InputStream ii = filePart.getInputStream();
+                    fo.setDireccion("calle20norte");
+                    fo.setFoto(ii);
+                    request.getRequestDispatcher("Controlador?menu=Alojamiento&accion=Listar").forward(request, response);
+                    break;
+                case "Delete":
+                    idd = request.getParameter("id");
+                    adao.deleteFot(idd);
+                    adao.deleteAl(idd);
+                    request.getRequestDispatcher("Controlador?menu=Alojamiento&accion=Listar").forward(request, response);
+                    break;
+            }
+            request.getRequestDispatcher("alojamiento.jsp").forward(request, response);
         }
     }
 

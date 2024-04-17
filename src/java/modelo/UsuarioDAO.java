@@ -128,9 +128,9 @@ public class UsuarioDAO {
                 cl.setContra(rs.getString("u.Contraseña"));
                 lista.add(cl);
             }
-            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
         } catch (Exception e) {
-            System.out.println(e.toString() + "fffffffffffffffffffffffffffffff");
+
         }
 
         return lista;
