@@ -1,10 +1,7 @@
-<%-- 
-    Document   : alojamientoUsu
-    Created on : Apr 13, 2024, 6:32:40 PM
-    Author     : User
---%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="modelo.Alojamiento"%>
+<%@ page import="java.net.URLEncoder" %>
 <!DOCTYPE html>
 <html>
     <head>

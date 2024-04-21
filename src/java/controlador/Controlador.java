@@ -174,6 +174,22 @@ public class Controlador extends HttpServlet {
             }
             request.getRequestDispatcher("alojamiento.jsp").forward(request, response);
         }
+        if (menu.equals("AlojamientoUsu")) {
+            switch (accion) {
+                case "Listar":
+                    List<Alojamiento> lista = adao.listar();
+                    request.setAttribute("Alojamientos", lista);
+                    break;
+                    
+                case "Delete":
+                    idd = request.getParameter("id");
+                    adao.deleteFot(idd);
+                    adao.deleteAl(idd);
+                    request.getRequestDispatcher("Controlador?menu=Alojamiento&accion=Listar").forward(request, response);
+                    break;
+            }
+            request.getRequestDispatcher("alojamientoUsu.jsp").forward(request, response);
+        }        
     }
 
     public String asegurarClave(String textoClaro) {

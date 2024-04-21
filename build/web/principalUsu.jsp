@@ -1,38 +1,58 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-
+<%@ page import="modelo.Alojamiento"%>
+<%@ page import="java.net.URLEncoder" %>
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>ViajesFeliz</title>
-        <link rel="stylesheet" href="css/style4.css">
-    </head>
-    <body>
 
-        <div class="back"></div>
-        <div>
-            <h1>VIAJESFELIZ S.A</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="#">Inicio</a></li>
-                <li><a href="#">Alojamientos</a></li>
-                <li><a href="#">Reservas</a></li>
-                <li class="dropdown">
-                    <button class="dropbtn">${user.getNom()}</button>
-                    <div class="dropdown-content">
-                        <a href="#">Ver Perfil</a>
-                        <a href="index.jsp">Salir</a>
-                    </div>
-                </li>
-            </ul>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+        <title>Home</title>
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">Home</a>
+
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a style="margin-left: 10px; border: none" class="btn btn-outline-light" href="Controlador?menu=AlojamientoUsu&accion=Listar" target="myFrame">Alojamientos</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a style="margin-left: 10px; border: none" class="btn btn-outline-light" href="#" target="myFrame" >Reservas</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a style="margin-left: 10px; border: none" class="btn btn-outline-light" href="Controlador?menu=Usuario&accion=Listar" target="myFrame">Cuenta</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                    ${user.getNom()}
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="#"><img src="img/user.png" alt="50" width="50"/></a>
+                    <a class="dropdown-item" href="#">${user.getCorreo()}</a>
+                    <div class="dropdown-divider"></div>
+                    <form action="Validar" method="POST">
+                        <button name="accion" value="Log Out" class="dropdown-item">Log Out</button>
+                    </form>
+                </div>
+            </div>
         </nav>
-        <div>
-            <h2>ENCUENTRA EL<BR> LUGAR PERFECTO</h2>
+
+        <div class="m-4"  style="height: 900px">
+            <iframe name="myFrame" style="height: 100%; width: 100%; border: none"></iframe>    
         </div>
-        <div>
-            <h3>NOSOTROS ESTAMOS PARA<BR> AYUDARTE EN EL PROCESO</h3>
-        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
     </body>
 </html>
