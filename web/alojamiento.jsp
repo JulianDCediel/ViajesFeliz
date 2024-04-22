@@ -211,7 +211,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                            <a class="btn btn-danger" href="Controlador?menu=Alojamineto&accion=Delete&id=${em.getDenco()}">Delete</a>
+                            <a class="btn btn-danger" href="Controlador?menu=Alojamiento&accion=Delete&id=${em.getDenco()}">Delete</a>
                         </div>
                     </div>
                 </div>

@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
@@ -61,9 +62,39 @@ public class AlojamientoDAO {
         return lista;
     }
 
+    public Alojamiento buscar(String dire) {
+        String sql = "select a.*,f.*,t.*,c.* from alojamiento a join fotos f on a.Direccion = f.Id_alojamiento join tipo t on a.Id_tipo = t.Id join cal_aire c on c.Id= a.Id_cal_aire where a.Direccion =? and f.Id_foto = 1 ";
+        Alojamiento em = new Alojamiento();
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, dire);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                String dir = rs.getString("a.Direccion");
+                em.setDireccion(dir);
+                String direccion = URLEncoder.encode(dir, "UTF-8");
+                em.setDenco(direccion);
+                em.setCed_emp(rs.getInt("a.Id_empleado"));
+                em.setN_personas(rs.getInt("a.N_personas"));
+                em.setN_baños(rs.getInt("a.N_banos"));
+                em.setN_habitaciones(rs.getInt("a.N_habitaciones"));
+                em.setTipo(rs.getString("t.Tipo"));
+                em.setP_min(rs.getInt("a.P_min"));
+                em.setMascotas(rs.getString("a.Mascotas"));
+                em.setCal_aire(rs.getString("c.Opcion"));
+                em.setFp(rs.getBinaryStream("f.Fotos"));
+            }
+        } catch (Exception e) {
+        }
+
+        return em;
+    }
+
     public void listarFoto(String id, HttpServletResponse response) {
         System.out.println(id + "-----");
-        String sql = "select a.*,f.* from alojamiento a join fotos f on a.Direccion = f.Id_alojamiento where a.Direccion =? and f.Id_foto = 1";
+        String sql = "select f.Fotos from alojamiento a join fotos f on a.Direccion = f.Id_alojamiento where a.Direccion =? and f.Id_foto = 1";
         InputStream inputstream = null;
         OutputStream outputstream = null;
         BufferedInputStream bufferIn = null;
@@ -89,6 +120,21 @@ public class AlojamientoDAO {
             }
         } catch (Exception e) {
             System.out.println(e.toString() + "llllllllllllllllllllllllllll");
+        } finally {
+            if (bufferIn != null) {
+                try {
+                    bufferIn.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if (bufferou != null) {
+            try {
+                bufferou.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -144,7 +190,7 @@ public class AlojamientoDAO {
             ps.setBlob(2, em.getFoto());
             ps.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.toString()+"qqqqqqqqqqqqqqqqqqqqqqq");
+            System.out.println(e.toString() + "qqqqqqqqqqqqqqqqqqqqqqq");
         }
         return r;
     }

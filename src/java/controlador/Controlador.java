@@ -180,16 +180,20 @@ public class Controlador extends HttpServlet {
                     List<Alojamiento> lista = adao.listar();
                     request.setAttribute("Alojamientos", lista);
                     break;
-                    
-                case "Delete":
-                    idd = request.getParameter("id");
-                    adao.deleteFot(idd);
-                    adao.deleteAl(idd);
-                    request.getRequestDispatcher("Controlador?menu=Alojamiento&accion=Listar").forward(request, response);
-                    break;
             }
             request.getRequestDispatcher("alojamientoUsu.jsp").forward(request, response);
-        }        
+        }
+        if (menu.equals("AlojamientoUsuDet")) {
+            switch (accion) {
+                case "listar":
+                    idd = request.getParameter("id");
+                    Alojamiento deta = new Alojamiento();
+                    deta = adao.buscar(idd);
+                    request.setAttribute("em", deta);
+                    break;
+            }
+            request.getRequestDispatcher("detallesAlo.jsp").forward(request, response);
+        }
     }
 
     public String asegurarClave(String textoClaro) {
