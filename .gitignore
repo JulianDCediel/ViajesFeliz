@@ -36,5 +36,6 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+dist/VIAJESFELZ.war
 
 # End of https://www.toptal.com/developers/gitignore/api/netbeans,java
