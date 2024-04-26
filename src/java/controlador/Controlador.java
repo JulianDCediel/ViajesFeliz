@@ -47,6 +47,9 @@ public class Controlador extends HttpServlet {
         if (menu.equals("Registrarse")) {
             request.getRequestDispatcher("registro.jsp").forward(request, response);
         }
+        if (menu.equals("Inicio")) {
+            request.getRequestDispatcher("inicio.jsp").forward(request, response);
+        }
         if (menu.equals("Empleado")) {
             switch (accion) {
                 case "Listar":
@@ -193,6 +196,10 @@ public class Controlador extends HttpServlet {
                     break;
             }
             request.getRequestDispatcher("detallesAlo.jsp").forward(request, response);
+        }
+        
+        if(menu.equals("Reservas")){
+            request.getRequestDispatcher("reservas.jsp").forward(request, response);
         }
     }
 

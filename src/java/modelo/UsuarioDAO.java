@@ -108,7 +108,20 @@ public class UsuarioDAO {
 
         return cl;
     }
+    public int agregartele(Telefono telefono) {
+        String sql = "insert into tel_usu(Telefono,id_usu) values (?,?)";
 
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, telefono.getNumero());
+            ps.setInt(2, telefono.getCedula());
+
+            ps.executeUpdate();
+        } catch (Exception e) {
+        }
+        return r;
+    }
     public List listar() {
         String sql = "select u.*,n.* from usuario u join nacionalidad n on u.Id_Nac = n.Id";
         List<Usuario> lista = new ArrayList();

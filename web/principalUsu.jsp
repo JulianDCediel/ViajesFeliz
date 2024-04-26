@@ -13,17 +13,18 @@
 
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="#">Home</a>
-
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a style="margin-left: 10px; border: none" class="btn btn-outline-light" href="Controlador?menu=Inicio" target="myFrame">INICIO</a>
+                    </li>
                     <li class="nav-item">
                         <a style="margin-left: 10px; border: none" class="btn btn-outline-light" href="Controlador?menu=AlojamientoUsu&accion=Listar" target="myFrame">Alojamientos</a>
                     </li>
 
                     <li class="nav-item">
-                        <a style="margin-left: 10px; border: none" class="btn btn-outline-light" href="#" target="myFrame" >Reservas</a>
+                        <a style="margin-left: 10px; border: none" class="btn btn-outline-light" href="Controlador?menu=Reservas" target="myFrame" >Reservas</a>
                     </li>
 
                     <li class="nav-item">

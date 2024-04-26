@@ -30,6 +30,9 @@
                     <input type="text" class="form-control item" id="Direccion" name="Direccion"required=" "placeholder="Direccion">
                 </div>
                 <div class="form-group">
+                    <input type="number" class="form-control item" id="telefono" name="telefono"required="" placeholder="Telefono">
+                </div>
+                <div class="form-group">
                     <input type="email" class="form-control item" id="email" name="email"required=""placeholder="Email">
                 </div>
                 <div class="form-group">

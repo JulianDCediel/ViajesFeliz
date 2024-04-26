@@ -11,6 +11,7 @@ import java.util.Base64;
 import modelo.Empleado;
 import modelo.EmpleadoDAO;
 import modelo.Nacionalidad;
+import modelo.Telefono;
 import modelo.Usuario;
 import modelo.UsuarioDAO;
 
@@ -41,13 +42,13 @@ public class Validar extends HttpServlet {
             if (em.getNom() != null) {
                 request.setAttribute("user", em);
                 request.getRequestDispatcher("Controlador?menu=PrincipalEmp").forward(request, response);
-            } else if (us.getNom()!=null) {
+            } else if (us.getNom() != null) {
                 request.setAttribute("user", us);
                 request.getRequestDispatcher("Controlador?menu=PrincipalUsu").forward(request, response);
             } else {
                 request.getRequestDispatcher("index.jsp").forward(request, response);
             }
-            
+
         } else if (accion.equalsIgnoreCase("Registrarse")) {
             request.getRequestDispatcher("Controlador?menu=Registrarse").forward(request, response);
         } else if (accion.equalsIgnoreCase("Registro")) {
@@ -57,11 +58,14 @@ public class Validar extends HttpServlet {
             int ced = Integer.parseInt(request.getParameter("cedula"));
             String dir = request.getParameter("Direccion");
             String corr = request.getParameter("email");
+            int tele = Integer.parseInt(request.getParameter("telefono"));
             String nac = request.getParameter("nac");
             String pass = asegurarClave(request.getParameter("password"));
+            Telefono tel = new Telefono(tele,ced);
             Usuario u = new Usuario(ced, nombre, apell, dir, corr, pass, nac);
             Nacionalidad naci = cdao.buscarNac(u.getNaci());
             cdao.agregar(u, naci);
+            cdao.agregartele(tel);
             request.getRequestDispatcher("index.jsp").forward(request, response);
         } else {
             request.getRequestDispatcher("index.jsp").forward(request, response);
