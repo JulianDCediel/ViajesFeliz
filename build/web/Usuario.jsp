@@ -32,6 +32,10 @@
                             <input type="text" value="${Cliente.getDireccion()}" name="txtDirec" class="form-control">
                         </div>
                         <div class="form-group">
+                            <label>Telefono</label>
+                            <input type="text" value="${Cliente.getTel()}" name="txtTel" class="form-control">
+                        </div>
+                        <div class="form-group">
                             <label>Correo</label>
                             <input type="text" value="${Cliente.getCorreo()}" name="txtCorreo" class="form-control">
                         </div>
@@ -58,7 +62,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        
+
                         <c:forEach var="em" items="${Clientes}">
                             <tr>
                                 <td>${em.getCed()}</td>
@@ -67,7 +71,7 @@
                                 <td>${em.getDireccion()}</td>
                                 <td>${em.getCorreo()}</td>
                                 <td>${em.getNaci()}</td>
-                               <td>
+                                <td>
                                     <a class="btn btn-warning" href="Controlador?menu=Usuario&accion=Ver&id=${em.getCed()}">VerDatos</a>
                                     <a class="btn btn-danger" href="Controlador?menu=Usuario&accion=Delete&id=${em.getCed()}">Eliminar</a>
                                 </td>

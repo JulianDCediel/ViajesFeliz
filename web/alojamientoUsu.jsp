@@ -22,7 +22,7 @@
                                 <label>${em.getDireccion()}</label>
                             </div>
                             <div class="card-body">
-                                <img src="ControladorIMG?id=${em.getDenco()}" width="200" height="180">
+                                <img src="${em.getRuta()}" width="300" height="250">
                             </div>
                             <div class="card-footer">
                                 <label>Num Personas:${em.getN_personas()}</label><br>

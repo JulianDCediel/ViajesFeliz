@@ -108,22 +108,43 @@ public class UsuarioDAO {
 
         return cl;
     }
-    public int agregartele(Telefono telefono) {
+
+    public Long buscarTel(int id) {
+        long tel = 0;
+        String sql = "select * from tel_usu where id_usu=" + id;
+
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                tel = rs.getLong("Telefono");
+            }
+        } catch (Exception e) {
+            System.out.println("bbbbbbbbbbbbbbbbbbb" +e);
+        }
+
+        return tel;
+    }
+
+    public int agregartele(Usuario telefono) {
         String sql = "insert into tel_usu(Telefono,id_usu) values (?,?)";
 
         try {
             con = cn.Conexion();
             ps = con.prepareStatement(sql);
-            ps.setInt(1, telefono.getNumero());
-            ps.setInt(2, telefono.getCedula());
+            ps.setLong(1, telefono.getTel());
+            ps.setInt(2, telefono.getCed());
 
             ps.executeUpdate();
         } catch (Exception e) {
         }
         return r;
     }
+
     public List listar() {
-        String sql = "select u.*,n.* from usuario u join nacionalidad n on u.Id_Nac = n.Id";
+        String sql = "select u.*,n.*,t.* from usuario u join nacionalidad n on u.Id_Nac = n.Id join tel_usu t on u.Id = t.id_usu";
         List<Usuario> lista = new ArrayList();
         try {
             con = cn.Conexion();
@@ -139,6 +160,7 @@ public class UsuarioDAO {
                 cl.setDireccion(rs.getString("u.Direccion"));
                 cl.setCorreo(rs.getString("u.Correo"));
                 cl.setContra(rs.getString("u.Contraseña"));
+                cl.setTel(rs.getLong("t.Telefono"));
                 lista.add(cl);
             }
 
@@ -185,6 +207,7 @@ public class UsuarioDAO {
                 em.setDireccion(rs.getString("Direccion"));
                 n = buscarNacId(rs.getInt("Id_Nac"));
                 em.setNaci(n.getNom());
+                em.setTel(buscarTel(id));
                 em.setContra(rs.getString("Contraseña"));
             }
         } catch (Exception e) {

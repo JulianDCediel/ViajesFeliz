@@ -7,16 +7,18 @@ package modelo;
 import java.io.InputStream;
 
 public class Foto {
+
     int id;
-    String direccion;
+    String direccion, nombre;
     InputStream foto;
 
     public Foto() {
     }
 
-    public Foto(int id, String direccion, InputStream foto) {
+    public Foto(int id, String direccion, String nombre, InputStream foto) {
         this.id = id;
         this.direccion = direccion;
+        this.nombre = nombre;
         this.foto = foto;
     }
 
@@ -28,6 +30,13 @@ public class Foto {
         this.foto = foto;
     }
 
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
     public int getId() {
         return id;
@@ -44,6 +53,4 @@ public class Foto {
     public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
-
-          
 }

@@ -7,17 +7,27 @@ package modelo;
 public class Empleado {
 
     int ced;
+    long tel;
     String nom, apell, correo, contra;
 
     public Empleado() {
     }
 
-    public Empleado(int ced, String nom, String apell, String correo, String contra) {
+    public Empleado(int ced, long tel, String nom, String apell, String correo, String contra) {
         this.ced = ced;
+        this.tel = tel;
         this.nom = nom;
         this.apell = apell;
         this.correo = correo;
         this.contra = contra;
+    }
+
+    public long getTel() {
+        return tel;
+    }
+
+    public void setTel(long tel) {
+        this.tel = tel;
     }
 
     public int getCed() {

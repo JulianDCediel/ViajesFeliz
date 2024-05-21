@@ -5,14 +5,19 @@
 package modelo;
 
 import config.Conexion;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,13 +28,82 @@ import java.util.List;
  *
  * @author User
  */
-public class AlojamientoDAO {
+public class AlojamientoDAO extends HttpServlet {
 
     Conexion cn = new Conexion();
     Connection con;
     PreparedStatement ps;
     ResultSet rs;
     int r, id_tipo, id_ca;
+
+    public String guardarImagenEnServidor(InputStream imagen, String nombreImagen, ServletContext context) {
+        try {
+            String fullPath = context.getRealPath("\\ImagenesCasas\\" + nombreImagen + ".jpg");
+            String[] pathComponents = fullPath.split("\\\\"); // Use "/" for Unix systems
+
+// Remove "build"
+            List<String> newPathComponents = new ArrayList<>();
+            for (String component : pathComponents) {
+                if (!component.equals("build")) {
+                    newPathComponents.add(component);
+                }
+            }
+
+// Join the path
+            String rutaDestino = String.join("\\", newPathComponents);
+            System.out.println("eqweqw" + rutaDestino);
+            String rutaBD = "ImagenesCasas\\\\" + nombreImagen + ".jpg";
+            System.out.println("zzzzzzzz<<<<<" + rutaDestino);
+            Files.copy(imagen, Paths.get(rutaDestino), StandardCopyOption.REPLACE_EXISTING);
+            return rutaBD;
+        } catch (IOException e) {
+            System.out.println("Error al guardar la imagen: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public int agregarFoto(Foto em, ServletContext context) {
+        String sql = "insert into fotos(Id_foto,Fotos, Id_alojamiento) values (?,?,?)";
+
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            String rutaImagen = guardarImagenEnServidor(em.getFoto(), em.getNombre(), context);
+            if (rutaImagen != null) {
+                ps.setInt(1, em.getId());
+                ps.setString(2, rutaImagen);
+                ps.setString(3, em.getDireccion());
+                ps.executeUpdate();
+            }
+            System.out.println("dddddddddddddddddddddddddddddd");
+        } catch (Exception e) {
+            System.out.println(e.toString() + "qqqqqqqqqqqqqqqqqqqqqqq");
+        }
+        return r;
+    }
+
+    public List Detalles(String id, HttpServletResponse response) {
+        String sql = "select fotos from fotos where Id_alojamiento =?";
+        List<String> lista = new ArrayList();
+        System.out.println("aaaaaaaaaaaaaaaaaaaaa");
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, id);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+
+                String rutaImagen = rs.getString("fotos");
+                rutaImagen = rutaImagen.replace("\\", "\\\\");
+                System.out.println(rutaImagen+"ayudaaaaaaaaaaa");
+                lista.add(rutaImagen);
+                
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+        return lista;
+    }
 
     public List listar() {
         String sql = "select a.*,f.*,t.*,c.* from alojamiento a join fotos f on a.Direccion = f.Id_alojamiento join tipo t on a.Id_tipo = t.Id join cal_aire c on c.Id= a.Id_cal_aire where f.Id_foto = 1";
@@ -53,10 +127,15 @@ public class AlojamientoDAO {
                 em.setP_min(rs.getInt("a.P_min"));
                 em.setMascotas(rs.getString("a.Mascotas"));
                 em.setCal_aire(rs.getString("c.Opcion"));
-                em.setFp(rs.getBinaryStream("f.Fotos"));
+                String rutaImagen = rs.getString("f.Fotos");
+                rutaImagen = rutaImagen.replace("\\", "\\\\");
+                System.out.println(rutaImagen);
+                em.setRuta(rutaImagen);
+                System.out.println(em.getRuta() + "uuuuuuuuuuuuu");
                 lista.add(em);
             }
         } catch (Exception e) {
+            System.out.println("aaaaaaaaaaaaaaaaa" + e);
         }
 
         return lista;
@@ -84,58 +163,15 @@ public class AlojamientoDAO {
                 em.setP_min(rs.getInt("a.P_min"));
                 em.setMascotas(rs.getString("a.Mascotas"));
                 em.setCal_aire(rs.getString("c.Opcion"));
-                em.setFp(rs.getBinaryStream("f.Fotos"));
+                String rutaImagen = rs.getString("f.Fotos");
+                rutaImagen = rutaImagen.replace("\\", "\\\\");
+                System.out.println(rutaImagen + "wwwwwwwwwww");
+                em.setRuta(rutaImagen);
             }
         } catch (Exception e) {
         }
 
         return em;
-    }
-
-    public void listarFoto(String id, HttpServletResponse response) {
-        System.out.println(id + "-----");
-        String sql = "select f.Fotos from alojamiento a join fotos f on a.Direccion = f.Id_alojamiento where a.Direccion =? and f.Id_foto = 1";
-        InputStream inputstream = null;
-        OutputStream outputstream = null;
-        BufferedInputStream bufferIn = null;
-        BufferedOutputStream bufferou = null;
-
-        try {
-            outputstream = response.getOutputStream();
-            con = cn.Conexion();
-            ps = con.prepareStatement(sql);
-            ps.setString(1, id);
-            rs = ps.executeQuery();
-            System.out.println("uuuuuuuuuuuuuuuu");
-            if (rs.next()) {
-                System.out.println("qqqqqqqqqqqqqqqqqqqq");
-                inputstream = rs.getBinaryStream("f.Fotos");
-                bufferIn = new BufferedInputStream(inputstream);
-                bufferou = new BufferedOutputStream(outputstream);
-
-                int i = 0;
-                while ((i = bufferIn.read()) != -1) {
-                    bufferou.write(i);
-                }
-            }
-        } catch (Exception e) {
-            System.out.println(e.toString() + "llllllllllllllllllllllllllll");
-        } finally {
-            if (bufferIn != null) {
-                try {
-                    bufferIn.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        if (bufferou != null) {
-            try {
-                bufferou.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public int agregar(Alojamiento em) {
@@ -179,22 +215,6 @@ public class AlojamientoDAO {
         return r;
     }
 
-    public int agregarFoto(Foto em) {
-
-        String sql = "insert into fotos(Fotos,Id_alojamiento) values (?,?)";
-
-        try {
-            con = cn.Conexion();
-            ps = con.prepareStatement(sql);
-            ps.setString(1, em.getDireccion());
-            ps.setBlob(2, em.getFoto());
-            ps.executeUpdate();
-        } catch (Exception e) {
-            System.out.println(e.toString() + "qqqqqqqqqqqqqqqqqqqqqqq");
-        }
-        return r;
-    }
-
     public void deleteFot(String id) {
         String sql = "delete from fotos where Id_alojamiento=?";
         try {
@@ -218,6 +238,5 @@ public class AlojamientoDAO {
         } catch (Exception e) {
             System.out.println(equals(e.toString() + "ttttttttttttttttttt"));
         }
-
     }
 }

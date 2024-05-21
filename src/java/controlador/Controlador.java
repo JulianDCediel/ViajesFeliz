@@ -1,8 +1,10 @@
 package controlador;
 
+import jakarta.servlet.ServletContext;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +21,7 @@ import modelo.EmpleadoDAO;
 import modelo.Foto;
 import modelo.Usuario;
 import modelo.UsuarioDAO;
+import org.apache.jasper.tagplugins.jstl.core.ForEach;
 
 @MultipartConfig
 public class Controlador extends HttpServlet {
@@ -37,108 +40,152 @@ public class Controlador extends HttpServlet {
 
         String menu = request.getParameter("menu");
         String accion = request.getParameter("accion");
-
-        if (menu.equals("PrincipalEmp")) {
-            request.getRequestDispatcher("principalEmp.jsp").forward(request, response);
-        }
-        if (menu.equals("PrincipalUsu")) {
-            request.getRequestDispatcher("principalUsu.jsp").forward(request, response);
-        }
-        if (menu.equals("Registrarse")) {
-            request.getRequestDispatcher("registro.jsp").forward(request, response);
-        }
-        if (menu.equals("Inicio")) {
-            request.getRequestDispatcher("inicio.jsp").forward(request, response);
-        }
-        if (menu.equals("Empleado")) {
-            switch (accion) {
-                case "Listar":
-                    List<Empleado> lista = edao.listar();
-                    request.setAttribute("empleados", lista);
-                    break;
-
-                case "Add":
-                    String Ced = request.getParameter("txtCed");
-                    String nom = request.getParameter("txtNombres");
-                    String apel = request.getParameter("txtApellidos");
-                    String corr = request.getParameter("txtCorreo");
-                    String contr = asegurarClave(request.getParameter("txtContra"));
-
-                    em.setCed(Integer.parseInt(Ced));
-                    em.setNom(nom);
-                    em.setApell(apel);
-                    em.setCorreo(corr);
-                    em.setContra(contr);
-
-                    edao.agregar(em);
-                    request.getRequestDispatcher("Controlador?menu=Empleado&accion=Listar").forward(request, response);
-                    break;
-
-                case "Edit":
-                    ide = Integer.parseInt(request.getParameter("id"));
-                    Empleado e = edao.listarId(ide);
-                    request.setAttribute("empleado", e);
-                    request.getRequestDispatcher("Controlador?menu=Empleado&accion=Listar").forward(request, response);
-                    break;
-
-                case "Update":
-                    String Id2 = request.getParameter("txtCed");
-                    String nom2 = request.getParameter("txtNombres");
-                    String apell2 = request.getParameter("txtApellidos");
-                    String correo2 = request.getParameter("txtCorreo");
-                    String contra2 = asegurarClave(request.getParameter("txtContra"));
-
-                    em.setCed(Integer.parseInt(Id2));
-                    em.setNom(nom2);
-                    em.setApell(apell2);
-                    em.setCorreo(correo2);
-                    em.setContra(contra2);
-
-                    edao.actualizar(em);
-                    request.getRequestDispatcher("Controlador?menu=Empleado&accion=Listar").forward(request, response);
-                    break;
-
-                case "Delete":
-                    ide = Integer.parseInt(request.getParameter("id"));
-                    edao.delete(ide);
-                    request.getRequestDispatcher("Controlador?menu=Empleado&accion=Listar").forward(request, response);
-                    break;
-
-                default:
-                    throw new AssertionError();
+        try {
+            if (menu.equals("PrincipalEmp")) {
+                request.getRequestDispatcher("principalEmp.jsp").forward(request, response);
             }
-            request.getRequestDispatcher("empleado.jsp").forward(request, response);
-        }
-        if (menu.equals("Usuario")) {
-            switch (accion) {
-                case "Listar":
-                    List<Usuario> lista = cdao.listar();
-                    request.setAttribute("Clientes", lista);
-                    break;
-                case "Ver":
-                    ide = Integer.parseInt(request.getParameter("id"));
-                    Usuario c = cdao.listarId(ide);
-                    request.setAttribute("Cliente", c);
-                    request.getRequestDispatcher("Controlador?menu=Usuario&accion=Listar").forward(request, response);
-                    break;
-                case "Delete":
-                    ide = Integer.parseInt(request.getParameter("id"));
-                    cdao.delete(ide);
-                    request.getRequestDispatcher("Controlador?menu=Usuario&accion=Listar").forward(request, response);
-                    break;
-
-                default:
-                    throw new AssertionError();
+            if (menu.equals("PrincipalUsu")) {
+                request.getRequestDispatcher("principalUsu.jsp").forward(request, response);
             }
-            request.getRequestDispatcher("Usuario.jsp").forward(request, response);
-        }
-        if (menu.equals("Alojamiento")) {
-            switch (accion) {
-                case "Listar":
-                    List<Alojamiento> lista = adao.listar();
-                    request.setAttribute("Alojamientos", lista);
-                    break;
-                case "Add":
+            if (menu.equals("Registrarse")) {
+                request.getRequestDispatcher("registro.jsp").forward(request, response);
+            }
+            if (menu.equals("Inicio")) {
+                request.getRequestDispatcher("inicio.jsp").forward(request, response);
+            }
+            if (menu.equals("Empleado")) {
+                switch (accion) {
+                    case "Listar":
+                        List<Empleado> lista = edao.listar();
+                        request.setAttribute("empleados", lista);
+                        break;
+
+                    case "Add":
+                        String Ced = request.getParameter("txtCed");
+                        String nom = request.getParameter("txtNombres");
+                        String apel = request.getParameter("txtApellidos");
+                        String corr = request.getParameter("txtCorreo");
+                        String contr = asegurarClave(request.getParameter("txtContra"));
+
+                        em.setCed(Integer.parseInt(Ced));
+                        em.setNom(nom);
+                        em.setApell(apel);
+                        em.setCorreo(corr);
+                        em.setContra(contr);
+
+                        edao.agregar(em);
+                        request.getRequestDispatcher("Controlador?menu=Empleado&accion=Listar").forward(request, response);
+                        break;
+
+                    case "Edit":
+                        ide = Integer.parseInt(request.getParameter("id"));
+                        Empleado e = edao.listarId(ide);
+                        request.setAttribute("empleado", e);
+                        request.getRequestDispatcher("Controlador?menu=Empleado&accion=Listar").forward(request, response);
+                        break;
+
+                    case "Update":
+                        String Id2 = request.getParameter("txtCed");
+                        String nom2 = request.getParameter("txtNombres");
+                        String apell2 = request.getParameter("txtApellidos");
+                        String correo2 = request.getParameter("txtCorreo");
+                        String contra2 = asegurarClave(request.getParameter("txtContra"));
+
+                        em.setCed(Integer.parseInt(Id2));
+                        em.setNom(nom2);
+                        em.setApell(apell2);
+                        em.setCorreo(correo2);
+                        em.setContra(contra2);
+
+                        edao.actualizar(em);
+                        request.getRequestDispatcher("Controlador?menu=Empleado&accion=Listar").forward(request, response);
+                        break;
+
+                    case "Delete":
+                        ide = Integer.parseInt(request.getParameter("id"));
+                        edao.delete(ide);
+                        request.getRequestDispatcher("Controlador?menu=Empleado&accion=Listar").forward(request, response);
+                        break;
+
+                    default:
+                        throw new AssertionError();
+                }
+                request.getRequestDispatcher("empleado.jsp").forward(request, response);
+            }
+            if (menu.equals("Usuario")) {
+                switch (accion) {
+                    case "Listar":
+                        List<Usuario> lista = cdao.listar();
+                        request.setAttribute("Clientes", lista);
+                        break;
+                    case "Ver":
+                        ide = Integer.parseInt(request.getParameter("id"));
+                        Usuario c = cdao.listarId(ide);
+                        request.setAttribute("Cliente", c);
+                        request.getRequestDispatcher("Controlador?menu=Usuario&accion=Listar").forward(request, response);
+                        break;
+                    case "Delete":
+                        ide = Integer.parseInt(request.getParameter("id"));
+                        cdao.delete(ide);
+                        request.getRequestDispatcher("Controlador?menu=Usuario&accion=Listar").forward(request, response);
+                        break;
+
+                    default:
+                        throw new AssertionError();
+                }
+                request.getRequestDispatcher("Usuario.jsp").forward(request, response);
+            }
+
+            if (menu.equals("Alojamiento")) {
+                switch (accion) {
+                    case "Listar":
+                        List<Alojamiento> lista = adao.listar();
+                        request.setAttribute("Alojamientos", lista);
+                        break;
+                    case "Delete":
+                        idd = request.getParameter("id");
+                        adao.deleteFot(idd);
+                        adao.deleteAl(idd);
+                        request.getRequestDispatcher("Controlador?menu=Alojamiento&accion=Listar").forward(request, response);
+                        break;
+                }
+                request.getRequestDispatcher("alojamiento.jsp").forward(request, response);
+            }
+            if (menu.equals("AlojamientoUPD")) {
+                try {
+                    String direc = request.getParameter("id");
+                    Alojamiento alo = adao.buscar(direc);
+                    System.out.println("uuuuuuuuuuuuuuuuuuuu" + alo);
+                    request.setAttribute("emp", alo);
+                } catch (Exception e) {
+                }
+                request.getRequestDispatcher("Controlador?menu=Alojamiento&accion=Listar").forward(request, response);
+            }
+            if (menu.equals("AlojamientoFotos")) {
+                try {
+                    Part filePart = request.getPart("fotos");
+                    InputStream ii = filePart.getInputStream();
+                    String Direccion = request.getParameter("direccion");
+                    int Nfoto = Integer.parseInt(request.getParameter("Nfotos"));
+                    String nombI = request.getParameter("nomI");
+                    fo.setId(Nfoto);
+                    fo.setFoto(ii);
+                    fo.setDireccion(Direccion);
+                    fo.setNombre(nombI);
+                    ServletContext contextt = getServletContext();
+                    System.out.println("dddddddddddddddddddddddddddddd" + contextt);
+                    adao.agregarFoto(fo, contextt);
+                    request.getRequestDispatcher("Controlador?menu=Alojamiento&accion=Listar").forward(request, response);
+                } catch (Exception e) {
+                    System.out.println("111111111111111 " + e);
+                }
+                request.getRequestDispatcher("alojamiento.jsp").forward(request, response);
+            }
+
+            if (menu.equals("AlojamientoADD")) {
+                try {
+                    Part filePart = request.getPart("fotos");
+                    InputStream ii = filePart.getInputStream();
                     String Direccion = request.getParameter("direccion");
                     int np = Integer.parseInt(request.getParameter("personas"));
                     int nb = Integer.parseInt(request.getParameter("banos"));
@@ -147,7 +194,10 @@ public class Controlador extends HttpServlet {
                     int prm = Integer.parseInt(request.getParameter("precio"));
                     String ma = request.getParameter("mascotas");
                     String ca = request.getParameter("ca");
-                    ;
+                    String nombI = request.getParameter("nomI");
+                    String ciu = request.getParameter("Ciudad");
+                    String barr = request.getParameter("Barrio");
+                    int Nfoto = Integer.parseInt(request.getParameter("Nfotos"));
                     al.setDireccion(Direccion);
                     al.setCed_emp(Validar.em.getCed());
                     al.setN_personas(np);
@@ -157,49 +207,52 @@ public class Controlador extends HttpServlet {
                     al.setP_min(prm);
                     al.setMascotas(ma);
                     al.setCal_aire(ca);
+                    fo.setId(Nfoto);
+                    fo.setFoto(ii);
+                    fo.setDireccion(Direccion);
+                    fo.setNombre(nombI);
+                    al.setCiudad(ciu);
+                    al.setBarrio(barr);
                     System.out.println(al.getDireccion() + "uuuuuuuuuuuuuu");
                     adao.agregar(al);
+                    ServletContext context = getServletContext();
+                    adao.agregarFoto(fo, context);
                     request.getRequestDispatcher("Controlador?menu=Alojamiento&accion=Listar").forward(request, response);
-                    break;
-                case "AddIm":
-                    Part filePart = request.getPart("fotos");
-                    InputStream ii = filePart.getInputStream();
-                    fo.setDireccion("calle20norte");
-                    fo.setFoto(ii);
-                    request.getRequestDispatcher("Controlador?menu=Alojamiento&accion=Listar").forward(request, response);
-                    break;
-                case "Delete":
-                    idd = request.getParameter("id");
-                    adao.deleteFot(idd);
-                    adao.deleteAl(idd);
-                    request.getRequestDispatcher("Controlador?menu=Alojamiento&accion=Listar").forward(request, response);
-                    break;
+                } catch (Exception e) {
+                    System.out.println("ayudaaaaaaaaaaaaaaa" + e);
+                }
+                request.getRequestDispatcher("alojamiento.jsp").forward(request, response);
             }
-            request.getRequestDispatcher("alojamiento.jsp").forward(request, response);
-        }
-        if (menu.equals("AlojamientoUsu")) {
-            switch (accion) {
-                case "Listar":
-                    List<Alojamiento> lista = adao.listar();
-                    request.setAttribute("Alojamientos", lista);
-                    break;
+            if (menu.equals("AlojamientoUsu")) {
+                switch (accion) {
+                    case "Listar":
+                        List<Alojamiento> lista = adao.listar();
+                        request.setAttribute("Alojamientos", lista);
+                        break;
+                }
+                request.getRequestDispatcher("alojamientoUsu.jsp").forward(request, response);
             }
-            request.getRequestDispatcher("alojamientoUsu.jsp").forward(request, response);
-        }
-        if (menu.equals("AlojamientoUsuDet")) {
-            switch (accion) {
-                case "listar":
-                    idd = request.getParameter("id");
-                    Alojamiento deta = new Alojamiento();
-                    deta = adao.buscar(idd);
-                    request.setAttribute("em", deta);
-                    break;
+            if (menu.equals("AlojamientoUsuDet")) {
+                switch (accion) {
+                    case "listar":
+                        idd = request.getParameter("id");
+                        Alojamiento deta = new Alojamiento();
+                        deta = adao.buscar(idd);
+                        List<String> fott = adao.Detalles(idd, response);
+                        request.setAttribute("em", deta);
+                        request.setAttribute("fotos", fott);
+                        break;
+                }
+                request.getRequestDispatcher("detallesAlo.jsp").forward(request, response);
             }
-            request.getRequestDispatcher("detallesAlo.jsp").forward(request, response);
-        }
-        
-        if(menu.equals("Reservas")){
-            request.getRequestDispatcher("reservas.jsp").forward(request, response);
+
+            if (menu.equals("Reservas")) {
+                String direc = request.getParameter("id");
+                request.getRequestDispatcher("reservas.jsp").forward(request, response);
+            }
+        } catch (Exception e) {
+            System.out.println("qqqqqqqqqqqqqqqqqqqqqqq" + e);
+            System.out.println(request.getParameter("accion"));
         }
     }
 

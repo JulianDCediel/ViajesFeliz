@@ -27,7 +27,10 @@
                             <label>Apellidos</label>
                             <input type="text" value="${empleado.getApell()}" name="txtApellidos" class="form-control">
                         </div>
-
+                        <div class="form-group">
+                            <label>Telefono</label>
+                            <input type="text" value="${empleado.getTel()}" name="txtTelefono" class="form-control">
+                        </div>
                         <div class="form-group">
                             <label>Correo</label>
                             <input type="text" value="${empleado.getCorreo()}" name="txtCorreo" class="form-control">
@@ -37,7 +40,7 @@
                             <label>Contraseña</label>
                             <input type="text" value="${empleado.getContra()}" name="txtContra" class="form-control">
                         </div>
-                        
+
                         <input type="submit" name="accion" value="Add" class="btn btn-info">
                         <input type="submit" name="accion" value="Update" class="btn btn-success">
                     </form>
@@ -57,7 +60,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        
+
                         <c:forEach var="em" items="${empleados}">
                             <tr>
                                 <td>${em.getCed()}</td>
@@ -65,7 +68,7 @@
                                 <td>${em.getApell()}</td>
                                 <td>${em.getCorreo()}</td>
                                 <td>${em.getContra()}</td>
-                               <td>
+                                <td>
                                     <a class="btn btn-warning" href="Controlador?menu=Empleado&accion=Edit&id=${em.getCed()}">Edit</a>
                                     <a class="btn btn-danger" href="Controlador?menu=Empleado&accion=Delete&id=${em.getCed()}">Delete</a>
                                 </td>

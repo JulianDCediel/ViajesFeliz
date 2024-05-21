@@ -3,13 +3,15 @@ package modelo;
 public class Usuario {
 
     int ced;
+    long tel;
     String nom, apell, direccion, correo, contra, naci;
 
     public Usuario() {
     }
 
-    public Usuario(int ced, String nom, String apell, String direccion, String correo, String contra, String naci) {
+    public Usuario(int ced, long tel, String nom, String apell, String direccion, String correo, String contra, String naci) {
         this.ced = ced;
+        this.tel = tel;
         this.nom = nom;
         this.apell = apell;
         this.direccion = direccion;
@@ -17,6 +19,15 @@ public class Usuario {
         this.contra = contra;
         this.naci = naci;
     }
+
+    public long getTel() {
+        return tel;
+    }
+
+    public void setTel(long tel) {
+        this.tel = tel;
+    }
+
 
     public String getNaci() {
         return naci;

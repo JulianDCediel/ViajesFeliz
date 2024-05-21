@@ -7,24 +7,54 @@ package modelo;
 import java.io.InputStream;
 
 public class Alojamiento {
-    String Direccion,denco,mascotas,Cal_aire,tipo;
-    int N_personas,N_baños,N_habitaciones,P_min,ced_emp;
+
+    String Direccion, denco, mascotas, Cal_aire, tipo, ruta,ciudad,barrio;
+    int N_personas, N_baños, N_habitaciones, P_min, ced_emp;
     InputStream fp;
+
     public Alojamiento() {
     }
 
-    public Alojamiento(String Direccion, String denco, String mascotas, String Cal_aire, String tipo, int N_personas, int N_baños, int N_habitaciones, int P_min, int ced_emp, InputStream fp) {
+    public Alojamiento(String Direccion, String denco, String mascotas, String Cal_aire, String tipo, String ruta, String ciudad, String barrio, int N_personas, int N_baños, int N_habitaciones, int P_min, int ced_emp, InputStream fp) {
         this.Direccion = Direccion;
         this.denco = denco;
         this.mascotas = mascotas;
         this.Cal_aire = Cal_aire;
         this.tipo = tipo;
+        this.ruta = ruta;
+        this.ciudad = ciudad;
+        this.barrio = barrio;
         this.N_personas = N_personas;
         this.N_baños = N_baños;
         this.N_habitaciones = N_habitaciones;
         this.P_min = P_min;
         this.ced_emp = ced_emp;
         this.fp = fp;
+    }
+
+    public String getCiudad() {
+        return ciudad;
+    }
+
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
+    }
+
+    public String getBarrio() {
+        return barrio;
+    }
+
+    public void setBarrio(String barrio) {
+        this.barrio = barrio;
+    }
+
+
+    public String getRuta() {
+        return ruta;
+    }
+
+    public void setRuta(String ruta) {
+        this.ruta = ruta;
     }
 
     public String getDenco() {
@@ -35,7 +65,6 @@ public class Alojamiento {
         this.denco = denco;
     }
 
-
     public InputStream getFp() {
         return fp;
     }
@@ -43,6 +72,7 @@ public class Alojamiento {
     public void setFp(InputStream fp) {
         this.fp = fp;
     }
+
     public String getDireccion() {
         return Direccion;
     }
@@ -117,7 +147,7 @@ public class Alojamiento {
 
     @Override
     public String toString() {
-        return "Alojamiento{" + "Direccion=" + Direccion + ", mascotas=" + mascotas + ", Cal_aire=" + Cal_aire + ", tipo=" + tipo + ", N_personas=" + N_personas + ", N_ba\u00f1os=" + N_baños + ", N_habitaciones=" + N_habitaciones + ", P_min=" + P_min + ", ced_emp=" + ced_emp + ", fp=" + fp + '}';
+        return "Alojamiento{" + "Direccion=" + Direccion + ", denco=" + denco + ", mascotas=" + mascotas + ", Cal_aire=" + Cal_aire + ", tipo=" + tipo + ", ruta=" + ruta + ", ciudad=" + ciudad + ", barrio=" + barrio + ", N_personas=" + N_personas + ", N_ba\u00f1os=" + N_baños + ", N_habitaciones=" + N_habitaciones + ", P_min=" + P_min + ", ced_emp=" + ced_emp + '}';
     }
-        
+
 }

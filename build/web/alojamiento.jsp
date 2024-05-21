@@ -30,7 +30,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="Controlador?menu=Alojamiento" method="POST"">
+                            <form action="Controlador?menu=AlojamientoADD" method="POST" enctype="multipart/form-data">
                                 <div class="mb-3">
                                     <label class="form-label">Direccion:</label>
                                     <input type="text" name="direccion" id="direccion" class="form-control" required="">
@@ -74,25 +74,38 @@
                                         <option value="Ninguno">Ninguno</option>
                                     </select>
                                 </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Ciudad</label>
+                                    <input type="text" name="Ciudad" id="Ciudad" class="form-control" required="">
+                                </div> 
+                                <div class="mb-3">
+                                    <label class="form-label">Barrio</label>
+                                    <input type="text" name="Barrio" id="Barrio" class="form-control" required="">
+                                </div> 
+                                <div class="mb-3">
+                                    <label class="form-label">Fotos</label>
+                                    <input type="file" name="fotos" id="fotos" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Numero Foto</label>
+                                    <input type="number" name="Nfotos" id="Nfotos" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Nombre Imagen</label>
+                                    <input type="text" name="nomI" id="nomI" class="form-control" required="">
+                                </div> 
                                 <div>
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                    <button type="submit" class="btn btn-primary" name="accion" value="Add"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
+                                    <button type="submit" class="btn btn-primary"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
                                 </div>
                             </form>
-         
+
                         </div>
                         <div class="modal-footer">
                         </div>
                     </div>
                 </div>
             </div>
-                 <form action="Controlador?menu=Alojamiento" method="POST" enctype="multipart/form-data">
-                                <div class="mb-3">
-                                    <label class="form-label">Fotos</label>
-                                    <input type="file" name="fotos" id="fotos" class="form-control">
-                                    <button type="submit" class="btn btn-primary" name="accion" value="AddIm"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
-                                </div> 
-                            </form>
             <table class="table table-sm table-striped table-hover mt-4">
                 <thead class="table-dark">
                     <tr>
@@ -116,10 +129,12 @@
                                 Mascotas: ${em.getMascotas()}<br>
                                 Caleafccion o Aire: ${em.getCal_aire()}<br>
                             </td>
-                            <td><img src="ControladorIMG?id=${em.getDenco()}" width="200" height="200"></td>
+                            <td><img src="${em.getRuta()}" width="200" height="200"></td>
                             <td>
-                                <a href="#" class="btn btn-sm btn-warning"data-toggle="modal" data-target="#modal2"><i class="fa-regular fa-pen-to-square"></i>>  Editar</a>
-                                <a href="#" class="btn btn-sm btn-danger"data-toggle="modal" data-target="#modal3"><i class="fa-regular fa-trash-can"></i>  Eliminar</a>
+                                <a href="Controlador?menu=AlojamientoUPD&id=${em.getDenco()}" class="btn btn-sm btn-warning"><i class="fa-regular fa-pen-to-square"></i>  CargarDatos</a>
+                                <a href="#" class="btn btn-sm btn-warning"data-toggle="modal" data-target="#modal2"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
+                                <a href="#" class="btn btn-sm btn-warning"data-toggle="modal" data-target="#modal4"><i class="fa-regular fa-pen-to-square"></i>Agregar Foto</a>
+                                <a href="#" class="btn btn-sm btn-danger"data-toggle="modal" data-target="#modal3"><i class="fa-regular fa-trash-can"></i>Eliminar</a>
                             </td>
                         </tr>
                     </c:forEach>
@@ -130,40 +145,39 @@
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="modal2">EDITAR ALOJAMIENTO</h5>
+                            <h5 class="modal-title" id="nuevomodal">EDITAR ALOJAMIENTO</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="Controlador?menu=Alojamiento" method="POST" enctype="multipart/form-data">
-
+                            <form action="Controlador?menu=AlojamientoUPD" method="POST">
                                 <div class="mb-3">
                                     <label class="form-label">Direccion:</label>
-                                    <input type="text" name="direccion" id="direccion""class="form-control" required="">
+                                    <input type="text" name="direccion" id="direccion" class="form-control" required="" value=${emp.getDireccion()}>
                                 </div> 
                                 <div class="mb-3">
                                     <label class="form-label">Numero Personas:</label>
-                                    <input type="number" name="personas" id="personas" class="form-control" required="">
+                                    <input type="number" name="personas" id="personas" class="form-control" required=""value=${emp.getN_personas()}>
                                 </div> 
                                 <div class="mb-3">
                                     <label class="form-label">Numero Baños:</label>
-                                    <input type="number" name="banos" id="banos" class="form-control" required="">
+                                    <input type="number" name="banos" id="banos" class="form-control" required="" value=${emp.getN_baños()}>
                                 </div> 
                                 <div class="mb-3">
                                     <label class="form-label">Numero habitaciones:</label>
-                                    <input type="number" name="hab" id="hab" class="form-control" required="">
+                                    <input type="number" name="hab" id="hab" class="form-control" required="" value=${emp.getN_habitaciones()}>
                                 </div> 
                                 <div class="mb-3">
                                     <label class="form-label">Tipo</label>
-                                    <select name="tipo" id="tipo" class="form-select">
+                                    <select name="tipo" id="tipo" class="form-select" >
                                         <option value="casa">Casa</option>
                                         <option value="cabaña">Cabaña</option>
                                     </select>
                                 </div> 
                                 <div class="mb-3">
                                     <label class="form-label">Precio Min</label>
-                                    <input type="number" name="precio" id="precio" class="form-control" required="">
+                                    <input type="number" name="precio" id="precio" class="form-control" required="" value=${emp.getP_min()}>
                                 </div> 
                                 <div class="mb-3">
                                     <label class="form-label">Mascotas</label>
@@ -175,19 +189,15 @@
                                 <div class="mb-3">
                                     <label class="form-label">Cal/Aire</label>
                                     <select name="ca" id="ca" class="form-select">
-                                        <option value="calefaccion">Calefaccion</option>
+                                        <option value="Calefaccion">Calefaccion</option>
                                         <option value="Aire">Aire Acondicionado</option>
                                         <option value="Ambos">Ambos</option>
                                         <option value="Ninguno">Ninguno</option>
                                     </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Fotos</label>
-                                    <input type="file" name="fotos" id="fotos" class="form-control" accept="image/png" multiple>
-                                </div> 
-                                <div class="">
+                                </div>               
+                                <div>
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                    <button type="submit" class="btn btn-primary" name="accion" value="edit"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
+                                    <button type="submit" class="btn btn-primary"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
                                 </div>
                             </form>
                         </div>
@@ -212,6 +222,46 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                             <a class="btn btn-danger" href="Controlador?menu=Alojamiento&accion=Delete&id=${em.getDenco()}">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal4 -->
+            <div class="modal fade" id="modal4" tabindex="-1" role="dialog" aria-labelledby="fotomodal" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="nuevomodal">FOTOS ALOJAMIENTO</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="Controlador?menu=AlojamientoFotos" method="POST" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label class="form-label">Direccion:</label>
+                                    <input type="text" name="direccion" id="direccion" class="form-control" required="" value=${emp.getDireccion()}>
+                                </div> 
+                                <div class="mb-3">
+                                    <label class="form-label">Fotos</label>
+                                    <input type="file" name="fotos" id="fotos" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Numero Foto</label>
+                                    <input type="number" name="Nfotos" id="Nfotos" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Nombre Imagen</label>
+                                    <input type="text" name="nomI" id="nomI" class="form-control" required="">
+                                </div> 
+                                <div>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                    <button type="submit" class="btn btn-primary"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
+                                </div>
+                            </form>
+
+                        </div>
+                        <div class="modal-footer">
                         </div>
                     </div>
                 </div>

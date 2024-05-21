@@ -11,7 +11,6 @@ import java.util.Base64;
 import modelo.Empleado;
 import modelo.EmpleadoDAO;
 import modelo.Nacionalidad;
-import modelo.Telefono;
 import modelo.Usuario;
 import modelo.UsuarioDAO;
 
@@ -19,7 +18,7 @@ public class Validar extends HttpServlet {
 
     EmpleadoDAO edao = new EmpleadoDAO();
     static Empleado em = new Empleado();
-    Usuario us = new Usuario();
+    static Usuario us = new Usuario();
     UsuarioDAO cdao = new UsuarioDAO();
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -61,11 +60,10 @@ public class Validar extends HttpServlet {
             int tele = Integer.parseInt(request.getParameter("telefono"));
             String nac = request.getParameter("nac");
             String pass = asegurarClave(request.getParameter("password"));
-            Telefono tel = new Telefono(tele,ced);
-            Usuario u = new Usuario(ced, nombre, apell, dir, corr, pass, nac);
+            Usuario u = new Usuario(ced, tele, nombre, apell,dir, corr, pass, nac);
             Nacionalidad naci = cdao.buscarNac(u.getNaci());
             cdao.agregar(u, naci);
-            cdao.agregartele(tel);
+            cdao.agregartele(u);
             request.getRequestDispatcher("index.jsp").forward(request, response);
         } else {
             request.getRequestDispatcher("index.jsp").forward(request, response);
