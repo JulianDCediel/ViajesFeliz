@@ -24,7 +24,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a style="margin-left: 10px; border: none" class="btn btn-outline-light" href="Controlador?menu=Reservas" target="myFrame" >Reservas</a>
+                        <a style="margin-left: 10px; border: none" class="btn btn-outline-light" href="Controlador?menu=reservasUsu&accion=listar" target="myFrame" >Reservas</a>
                     </li>
 
                     <li class="nav-item">

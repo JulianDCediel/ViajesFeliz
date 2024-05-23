@@ -21,6 +21,7 @@ import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,9 +96,9 @@ public class AlojamientoDAO extends HttpServlet {
 
                 String rutaImagen = rs.getString("fotos");
                 rutaImagen = rutaImagen.replace("\\", "\\\\");
-                System.out.println(rutaImagen+"ayudaaaaaaaaaaa");
+                System.out.println(rutaImagen + "ayudaaaaaaaaaaa");
                 lista.add(rutaImagen);
-                
+
             }
         } catch (Exception e) {
             System.out.println(e.toString());
@@ -106,7 +107,7 @@ public class AlojamientoDAO extends HttpServlet {
     }
 
     public List listar() {
-        String sql = "select a.*,f.*,t.*,c.* from alojamiento a join fotos f on a.Direccion = f.Id_alojamiento join tipo t on a.Id_tipo = t.Id join cal_aire c on c.Id= a.Id_cal_aire where f.Id_foto = 1";
+        String sql = "select a.*,f.*,t.*,c.*,bar.*,ciu.* from alojamiento a join fotos f on a.Direccion = f.Id_alojamiento join tipo t on a.Id_tipo = t.Id join cal_aire c on c.Id = a.Id_cal_aire join ciudad ciu on a.Id_ciudad = ciu.Id join barrio bar on a.Id_barrio = bar.Id where f.Id_foto = 1";
         List<Alojamiento> lista = new ArrayList();
 
         try {
@@ -125,6 +126,8 @@ public class AlojamientoDAO extends HttpServlet {
                 em.setN_habitaciones(rs.getInt("a.N_habitaciones"));
                 em.setTipo(rs.getString("t.Tipo"));
                 em.setP_min(rs.getInt("a.P_min"));
+                em.setCiudad(rs.getString("Ciu.NombreCiudad"));
+                em.setBarrio(rs.getString("bar.NombreBarrio"));
                 em.setMascotas(rs.getString("a.Mascotas"));
                 em.setCal_aire(rs.getString("c.Opcion"));
                 String rutaImagen = rs.getString("f.Fotos");
@@ -142,7 +145,7 @@ public class AlojamientoDAO extends HttpServlet {
     }
 
     public Alojamiento buscar(String dire) {
-        String sql = "select a.*,f.*,t.*,c.* from alojamiento a join fotos f on a.Direccion = f.Id_alojamiento join tipo t on a.Id_tipo = t.Id join cal_aire c on c.Id= a.Id_cal_aire where a.Direccion =? and f.Id_foto = 1 ";
+        String sql = "select a.*,f.*,t.*,c.*,bar.*,ciu.* from alojamiento a join fotos f on a.Direccion = f.Id_alojamiento join tipo t on a.Id_tipo = t.Id join cal_aire c on c.Id= a.Id_cal_aire join ciudad ciu on a.Id_ciudad = ciu.Id join barrio bar on a.Id_barrio = bar.Id where a.Direccion =? and f.Id_foto = 1 ";
         Alojamiento em = new Alojamiento();
         try {
             con = cn.Conexion();
@@ -162,10 +165,11 @@ public class AlojamientoDAO extends HttpServlet {
                 em.setTipo(rs.getString("t.Tipo"));
                 em.setP_min(rs.getInt("a.P_min"));
                 em.setMascotas(rs.getString("a.Mascotas"));
+                em.setCiudad(rs.getString("Ciu.NombreCiudad"));
+                em.setBarrio(rs.getString("bar.NombreBarrio"));
                 em.setCal_aire(rs.getString("c.Opcion"));
                 String rutaImagen = rs.getString("f.Fotos");
                 rutaImagen = rutaImagen.replace("\\", "\\\\");
-                System.out.println(rutaImagen + "wwwwwwwwwww");
                 em.setRuta(rutaImagen);
             }
         } catch (Exception e) {
@@ -174,44 +178,105 @@ public class AlojamientoDAO extends HttpServlet {
         return em;
     }
 
-    public int agregar(Alojamiento em) {
-
-        String sql = "insert into alojamiento(Direccion,Id_empleado,N_personas,N_banos,N_habitaciones,Id_tipo,P_min,Mascotas,Id_cal_aire) values (?,?,?,?,?,?,?,?,?)";
-        System.out.println(em.getCal_aire());
-        System.out.println(em.getTipo());
-        System.out.println(em.getMascotas());
-        System.out.println(em.getCed_emp());
+    public int buscarCi(String em) {
+        String sql = "select Id from ciudad where NombreCiudad =?";
+        int id = 0;
         try {
             con = cn.Conexion();
             ps = con.prepareStatement(sql);
-            ps.setString(1, em.getDireccion());
-            ps.setInt(2, em.getCed_emp());
-            ps.setInt(3, em.getN_personas());
-            ps.setInt(4, em.getN_baños());
-            ps.setInt(5, em.getN_habitaciones());
-            if (em.getTipo().equals("casa")) {
-                id_tipo = 1;
-            } else if (em.getTipo().equals("cabaña")) {
-                id_tipo = 2;
+            ps.setString(1, em);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                id = rs.getInt("Id");
             }
-            System.out.println(id_tipo + "qqqqqqqqqqqq");
-            ps.setInt(6, id_tipo);
-            ps.setInt(7, em.getP_min());
-            ps.setString(8, em.getMascotas());
-            if (em.getCal_aire().equals("Calefaccion")) {
-                id_ca = 1;
-            } else if (em.getCal_aire().equals("Aire")) {
-                id_ca = 2;
-            } else if (em.getCal_aire().equals("Ambos")) {
-                id_ca = 3;
-            } else if (em.getCal_aire().equals("Ninguno")) {
-                id_ca = 4;
-            }
-            ps.setInt(9, id_ca);
-            ps.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.toString() + "rrrrrrrrrrrrrrrrrrrrrrrrrr");
         }
+        return id;
+    }
+
+    public int buscarBa(String em) {
+        String sql = "select Id from barrio where NombreBarrio =?";
+        int id = 0;
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, em);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                id = rs.getInt("Id");
+            }
+        } catch (Exception e) {
+        }
+        return id;
+    }
+
+    public int buscarTipo(String em) {
+        String sql = "select Id from tipo where Tipo =?";
+        int id = 0;
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, em);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                id = rs.getInt("Id");
+            }
+        } catch (Exception e) {
+        }
+        return id;
+    }
+
+    public int buscarCA(String em) {
+        String sql = "select Id from cal_aire where Opcion =?";
+        int id = 0;
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, em);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                id = rs.getInt("Id");
+            } else {
+            }
+        } catch (Exception e) {
+        }
+        return id;
+    }
+
+    public int agregar(Alojamiento em) {
+        String sql = "INSERT INTO Alojamiento (Direccion, Id_empleado, N_personas, N_banos, N_habitaciones, Id_tipo, P_min, Mascotas, Id_CAL_AIRE, Id_ciudad, Id_barrio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        System.out.println("SQL Query: " + sql);
+
+        try {
+            con = cn.Conexion();
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+
+            // Valores de ejemplo
+            preparedStatement.setString(1, em.getDireccion());
+            preparedStatement.setInt(2, em.getCed_emp());
+            preparedStatement.setInt(3, em.getN_personas());
+            preparedStatement.setInt(4, em.getN_baños());
+            preparedStatement.setInt(5, em.getN_habitaciones());
+            int Tipo = buscarTipo(em.getTipo());
+            preparedStatement.setInt(6, Tipo);
+            preparedStatement.setInt(7, em.getP_min());
+            preparedStatement.setString(8, em.getMascotas());
+            int CA = buscarCA(em.getCal_aire());
+            preparedStatement.setInt(9, CA);
+            int CIU = buscarCi(em.getCiudad());
+            preparedStatement.setInt(10, CIU);
+            int BAR = buscarBa(em.getBarrio());
+            preparedStatement.setInt(11, BAR);
+
+            preparedStatement.executeUpdate();
+            System.out.println("Filas insertadas 1");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return r;
     }
 

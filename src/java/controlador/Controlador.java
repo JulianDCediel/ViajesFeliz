@@ -12,15 +12,23 @@ import jakarta.servlet.http.Part;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 import modelo.Alojamiento;
 import modelo.AlojamientoDAO;
 import modelo.Empleado;
 import modelo.EmpleadoDAO;
 import modelo.Foto;
+import modelo.Pago;
+import modelo.PagoDAO;
+import modelo.Reserva;
+import modelo.ReservasDAO;
 import modelo.Usuario;
 import modelo.UsuarioDAO;
+import modelo.reservasusu;
 import org.apache.jasper.tagplugins.jstl.core.ForEach;
 
 @MultipartConfig
@@ -32,6 +40,8 @@ public class Controlador extends HttpServlet {
     UsuarioDAO cdao = new UsuarioDAO();
     Alojamiento al = new Alojamiento();
     AlojamientoDAO adao = new AlojamientoDAO();
+    ReservasDAO redao = new ReservasDAO();
+    PagoDAO pagdao = new PagoDAO();
     Foto fo = new Foto();
     int ide;
     String idd;
@@ -213,7 +223,6 @@ public class Controlador extends HttpServlet {
                     fo.setNombre(nombI);
                     al.setCiudad(ciu);
                     al.setBarrio(barr);
-                    System.out.println(al.getDireccion() + "uuuuuuuuuuuuuu");
                     adao.agregar(al);
                     ServletContext context = getServletContext();
                     adao.agregarFoto(fo, context);
@@ -246,9 +255,110 @@ public class Controlador extends HttpServlet {
                 request.getRequestDispatcher("detallesAlo.jsp").forward(request, response);
             }
 
-            if (menu.equals("Reservas")) {
-                String direc = request.getParameter("id");
+            if (menu.equals("reservas")) {
+                switch (accion) {
+                    case "listar":
+                        idd = request.getParameter("id");
+                        Alojamiento deta = new Alojamiento();
+                        deta = adao.buscar(idd);
+                        int ced = Validar.us.getCed();
+                        List<Reserva> reservas = redao.obtenerReservas(idd);
+                        request.setAttribute("reservas", reservas);
+                        request.setAttribute("em", deta);
+                        request.setAttribute("usu", ced);
+                        break;
+                }
                 request.getRequestDispatcher("reservas.jsp").forward(request, response);
+            }
+            if (menu.equals("reservar")) {
+
+                try {
+                    String Direccion = request.getParameter("direccion");
+                    int ced = Integer.parseInt(request.getParameter("usuario"));
+                    String fecha_inicio_str = request.getParameter("fecha_inicio");
+                    String fecha_fin_str = request.getParameter("fecha_fin");
+                    SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+                    Date ini = formato.parse(fecha_inicio_str);
+                    Date fin = formato.parse(fecha_fin_str);
+                    int np = Integer.parseInt(request.getParameter("personas"));
+                    String ma = request.getParameter("mascotas");
+                    int total = (int) Double.parseDouble(request.getParameter("total"));
+                    Reserva re = new Reserva(ini, fin, np, total, ced, Direccion, ma);
+                    redao.agregar(re);
+                    int reserva = redao.buscarReser();
+                    redao.agregarDet(re, reserva);
+
+                    Alojamiento deta = new Alojamiento();
+                    deta = adao.buscar(Direccion);
+                    int cedu = Validar.us.getCed();
+                    List<Reserva> reservas = redao.obtenerReservas(idd);
+                    request.setAttribute("reservas", reservas);
+                    request.setAttribute("em", deta);
+                    request.setAttribute("usu", cedu);
+                    request.setAttribute("total", total);
+                } catch (Exception e) {
+                    System.out.println("porqqqqqqqqqqqqqqqqqqqq" + e);
+                }
+                request.getRequestDispatcher("pagar.jsp").forward(request, response);
+            }
+
+            if (menu.equals("pago")) {
+
+                try {
+                    String Direccion = request.getParameter("direccion");
+                    int ced = Integer.parseInt(request.getParameter("usuario"));
+                    String fecha_pago_str = request.getParameter("fecha_pago");
+                    SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+                    Date pago = formato.parse(fecha_pago_str);
+                    int cantidad = Integer.parseInt(request.getParameter("cantidad"));
+                    Pago pag = new Pago(pago, cantidad, ced, Direccion);
+                    int reserva = redao.buscarReser();
+                    pagdao.agregar(pag, reserva);
+                } catch (Exception e) {
+                    System.out.println("porqqqqqqqqqqqqqqqqqqqq" + e);
+                }
+                request.getRequestDispatcher("Controlador?menu=AlojamientoUsu&accion=Listar").forward(request, response);
+            }
+            if (menu.equals("reservasUsu")) {
+                switch (accion) {
+                    case "listar":
+                        int ced = Validar.us.getCed();
+
+                        List<reservasusu> reser = redao.obtenerListaReservas(ced);
+                        request.setAttribute("reservas", reser);
+                        break;
+                }
+                request.getRequestDispatcher("reservasUsu.jsp").forward(request, response);
+            }
+            if (menu.equals("reservarFin")) {
+
+                try {
+                    int idRe = Integer.parseInt(request.getParameter("id"));
+                    reservasusu resus = redao.obtenerRes(idRe);
+                    int cedu = Validar.us.getCed();
+                    request.setAttribute("em", resus);
+                    request.setAttribute("usu", cedu);
+                } catch (Exception e) {
+                    System.out.println("porqqqqqqqqqqqqqqqqqqqq" + e);
+                }
+                request.getRequestDispatcher("pagar2.jsp").forward(request, response);
+            }
+            if (menu.equals("pagofaltante")) {
+
+                try {
+                    String Direccion = request.getParameter("direccion");
+                    int ced = Integer.parseInt(request.getParameter("usuario"));
+                    String fecha_pago_str = request.getParameter("fecha_pago");
+                    SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+                    Date pago = formato.parse(fecha_pago_str);
+                    int cantidad = Integer.parseInt(request.getParameter("faltante"));
+                    Pago pag = new Pago(pago, cantidad, ced, Direccion);
+                    int reserva = redao.buscarReser();
+                    pagdao.agregar(pag, reserva);
+                } catch (Exception e) {
+                    System.out.println("porqqqqqqqqqqqqqqqqqqqq" + e);
+                }
+                request.getRequestDispatcher("Controlador?menu=AlojamientoUsu&accion=Listar").forward(request, response);
             }
         } catch (Exception e) {
             System.out.println("qqqqqqqqqqqqqqqqqqqqqqq" + e);

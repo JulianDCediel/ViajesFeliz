@@ -26,9 +26,11 @@
             precio Minimo: ${em.getP_min()}<br>
             Mascotas: ${em.getMascotas()}<br>
             Caleafccion o Aire: ${em.getCal_aire()}<br>
+            Ciudad: ${em.getCiudad()}<br>
+            Barrio: ${em.getBarrio()}<br>
         </div>
         <div>
-            <a href="Controlador?menu=AlojamientoUsuDet&accion=listar&id=${em.getDenco()}" class="btn btn-outline-info">RESERVAR</a>
+            <a href="Controlador?menu=reservas&accion=listar&id=${em.getDenco()}" class="btn btn-outline-info">RESERVAR</a>
         </div>
     </body>
 </html>
