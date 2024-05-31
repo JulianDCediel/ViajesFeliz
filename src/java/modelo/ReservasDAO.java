@@ -37,21 +37,34 @@ public class ReservasDAO {
         }
     }
 
-    public int buscarReser() {
+    public reservasusu buscarReser() {
         con = cn.Conexion();
-        int id = 0;
-        String sql = "SELECT MAX(Id) as Id from reserva";
+        reservasusu rr = new reservasusu();
+        String sql = "SELECT * FROM reserva WHERE Id = (SELECT MAX(Id) FROM reserva)";
 
         try {
             ps = con.prepareStatement(sql);
             rs = ps.executeQuery();
             if (rs.next()) {
-                id = rs.getInt("Id");
+                rr.setIdRes(rs.getInt("Id"));
+                rr.setTotal(rs.getInt("Total"));
             }
         } catch (Exception e) {
             System.out.println("ttwqtetqtweq" + e);
         }
-        return id;
+        return rr;
+    }
+
+    public void updResR() {
+        con = cn.Conexion();
+        String sql = "UPDATE reserva set Id_estado=2 where Id =(SELECT MAX(Id) FROM reserva)";
+        try {
+            ps = con.prepareStatement(sql);
+            ps.execute();
+            System.out.println("biennnnnnnnnnnnn");
+        } catch (Exception e) {
+            System.out.println("ttwqtetqtweq" + e);
+        }
     }
 
     public void agregarDet(Reserva em, int re) {
@@ -107,7 +120,7 @@ public class ReservasDAO {
     public List<reservasusu> obtenerListaReservas(int id) {
         List<reservasusu> reservas = new ArrayList<>();
         con = cn.Conexion();
-        String sql = "SELECT SUM(p.Cantidad) cantidadP,r.*,d.*,p.* FROM detalle d join reserva r on d.Id_reserva=r.Id join pago p on p.Id_reserva = r.Id where d.Id_Usuario= ?";
+        String sql = "SELECT SUM(p.Cantidad) cantidadP,r.*,d.*,p.*,e.* FROM detalle d join reserva r on d.Id_reserva=r.Id join pago p on p.Id_reserva = r.Id join estado e on e.Id = r.Id_estado where d.Id_Usuario=? GROUP BY r.Id";
         try {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, id);
@@ -124,6 +137,7 @@ public class ReservasDAO {
                 reserva.setTotal(rs.getInt("r.Total"));
                 reserva.setCantP(rs.getInt("cantidadP"));
                 reserva.setIdRes(rs.getInt("r.Id"));
+                reserva.setEstado(rs.getString("e.estado"));
                 System.out.println(reserva.toString());
                 reservas.add(reserva);
 
@@ -144,7 +158,7 @@ public class ReservasDAO {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
 
-             if(rs.next()) {
+            if (rs.next()) {
 
                 reserva.setDireccion(rs.getString("d.Id_alojamiento"));
                 reserva.setCed(rs.getInt("d.Id_usuario"));

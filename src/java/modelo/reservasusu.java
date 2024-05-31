@@ -14,12 +14,12 @@ public class reservasusu {
 
     Date f_i, f_f;
     int n_per, total, ced,cantP,idRes;
-    String direccion, mascotas;
+    String direccion, mascotas,estado;
 
     public reservasusu() {
     }
 
-    public reservasusu(Date f_i, Date f_f, int n_per, int total, int ced, int cantP, int idRes, String direccion, String mascotas) {
+    public reservasusu(Date f_i, Date f_f, int n_per, int total, int ced, int cantP, int idRes, String direccion, String mascotas, String estado) {
         this.f_i = f_i;
         this.f_f = f_f;
         this.n_per = n_per;
@@ -29,6 +29,7 @@ public class reservasusu {
         this.idRes = idRes;
         this.direccion = direccion;
         this.mascotas = mascotas;
+        this.estado = estado;
     }
 
     public int getIdRes() {
@@ -39,6 +40,15 @@ public class reservasusu {
         this.idRes = idRes;
     }
 
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    
     public Date getF_i() {
         return f_i;
     }

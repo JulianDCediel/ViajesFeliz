@@ -29,7 +29,7 @@
         </div>
         <div>
             <label class="form-label">Cantidad:</label>
-            <input type="number" name="cantidad" id="cantidad" class="form-control"required="" min="${total*0.2}">
+            <input type="number" name="cantidad" id="cantidad" class="form-control"required="" min="${total*0.2}" max="${total}">
         </div>
         <button type="submit">Pagar</button>
     </form>

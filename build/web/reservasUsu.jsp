@@ -12,17 +12,23 @@
         <h1>TUS RESERVAS!</h1>
         <c:forEach var="em" items="${reservas}">
             <div>
-                Numero Reserva:${em.getIdRes()}<br>
-                Direccion:${em.getDireccion()}<br>
+                Numero Reserva: ${em.getIdRes()}<br>
+                Estado Reserva: ${em.getEstado()}<br>
+                Direccion: ${em.getDireccion()}<br>
                 Cedula usuario: ${em.getCed()}<br>
-                Numero Personas:${em.getN_per()}<br>
+                Fecha Inicio: ${em.getF_i()}<br>
+                Fecha Inicio: ${em.getF_f()}<br>
+                Numero Personas: ${em.getN_per()}<br>
                 Mascotas: ${em.getMascotas()}<br>
                 Total: ${em.getTotal()}<br>
-                cantidad Pagada: ${em.getCantP()}<br>
-                <form action="" method="post">
-                    <a class="btn btn-warning" href="Controlador?menu=reservarFin&id=${em.getIdRes()}">PAGAR</a>
-                </form>
-            </div>      
+                Cantidad Pagada: ${em.getCantP()}<br>
+                <c:if test="${em.getCantP() < em.getTotal()}">
+                    <form action="" method="post">
+                        <a class="btn btn-warning" href="Controlador?menu=reservarFin&id=${em.getIdRes()}">PAGAR</a>
+                    </form>
+                </c:if>
+            </div>
         </c:forEach>
     </body>
 </html>
+

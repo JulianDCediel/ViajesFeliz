@@ -285,8 +285,8 @@ public class Controlador extends HttpServlet {
                     int total = (int) Double.parseDouble(request.getParameter("total"));
                     Reserva re = new Reserva(ini, fin, np, total, ced, Direccion, ma);
                     redao.agregar(re);
-                    int reserva = redao.buscarReser();
-                    redao.agregarDet(re, reserva);
+                    reservasusu rp = redao.buscarReser();
+                    redao.agregarDet(re, rp.getIdRes());
 
                     Alojamiento deta = new Alojamiento();
                     deta = adao.buscar(Direccion);
@@ -312,8 +312,14 @@ public class Controlador extends HttpServlet {
                     Date pago = formato.parse(fecha_pago_str);
                     int cantidad = Integer.parseInt(request.getParameter("cantidad"));
                     Pago pag = new Pago(pago, cantidad, ced, Direccion);
-                    int reserva = redao.buscarReser();
-                    pagdao.agregar(pag, reserva);
+                    reservasusu rp = redao.buscarReser();
+                    if (pag.getCantidad() < rp.getTotal()) {
+                        pagdao.agregar(pag, rp.getIdRes());
+                    } else {
+                        redao.updResR();
+                        pagdao.agregar(pag, rp.getIdRes());
+                    }
+
                 } catch (Exception e) {
                     System.out.println("porqqqqqqqqqqqqqqqqqqqq" + e);
                 }
@@ -346,6 +352,7 @@ public class Controlador extends HttpServlet {
             if (menu.equals("pagofaltante")) {
 
                 try {
+                    int idres = Integer.parseInt(request.getParameter("reserva"));
                     String Direccion = request.getParameter("direccion");
                     int ced = Integer.parseInt(request.getParameter("usuario"));
                     String fecha_pago_str = request.getParameter("fecha_pago");
@@ -353,8 +360,7 @@ public class Controlador extends HttpServlet {
                     Date pago = formato.parse(fecha_pago_str);
                     int cantidad = Integer.parseInt(request.getParameter("faltante"));
                     Pago pag = new Pago(pago, cantidad, ced, Direccion);
-                    int reserva = redao.buscarReser();
-                    pagdao.agregar(pag, reserva);
+                    pagdao.agregar(pag, idres);
                 } catch (Exception e) {
                     System.out.println("porqqqqqqqqqqqqqqqqqqqq" + e);
                 }
