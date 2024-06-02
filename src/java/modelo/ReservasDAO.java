@@ -67,6 +67,32 @@ public class ReservasDAO {
         }
     }
 
+    public void updResfinn(int id) {
+        con = cn.Conexion();
+        String sql = "UPDATE reserva set Id_estado=2 where Id =?";
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.execute();
+            System.out.println("biennnnnnnnnnnnn");
+        } catch (Exception e) {
+            System.out.println("ttwqtetqtweq" + e);
+        }
+    }
+
+    public void updResfinalizar(int id) {
+        con = cn.Conexion();
+        String sql = "UPDATE reserva set Id_estado=3 where Id =?";
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.execute();
+            System.out.println("biennnnnnnnnnnnn");
+        } catch (Exception e) {
+            System.out.println("ttwqtetqtweq" + e);
+        }
+    }
+
     public void agregarDet(Reserva em, int re) {
         con = cn.Conexion();
         String sql = "INSERT INTO detalle (Id_alojamiento,Id_usuario,N_personas,Mascotas,F_entrada,F_salida,Id_reserva) VALUES (?,?,?,?,?,?,?)";
@@ -176,5 +202,43 @@ public class ReservasDAO {
         }
 
         return reserva;
+    }
+
+    public void calificacion(int cal, String comen, int id) {
+        con = cn.Conexion();
+        String sql = "INSERT INTO encuesta (Clasificacion,Comentarios,Id_reserva) VALUES (?,?,?)";
+
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, cal);
+            ps.setString(2, comen);
+            ps.setInt(3, id);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("ytytttttt" + e);
+        }
+    }
+
+    public encuesta Busccalificacion(int id) {
+        con = cn.Conexion();
+        encuesta encu = new encuesta();
+        String sql = "select * from encuesta where Id_reserva=?";
+
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                encu.setId(rs.getInt("Id_reserva"));
+                encu.setComen(rs.getString("Comentarios"));
+                encu.setCal(rs.getInt("Clasificacion"));
+            }
+        } catch (Exception e) {
+            System.out.println("Error al obtener las reservas: " + e);
+        }
+
+        return encu;
     }
 }

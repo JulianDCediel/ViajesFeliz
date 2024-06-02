@@ -280,13 +280,51 @@ public class AlojamientoDAO extends HttpServlet {
         return r;
     }
 
+    public int editar(Alojamiento em) {
+        String sql = "UPDATE Alojamiento SET Id_empleado=?, N_personas=?, N_banos=?, N_habitaciones=?, Id_tipo=?, P_min=?, Mascotas=?, Id_CAL_AIRE=?, Id_ciudad=?, Id_barrio=? WHERE Direccion=?";
+        System.out.println("SQL Query: " + sql);
+
+        try {
+            con = cn.Conexion();
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+
+            // Valores de ejemplo
+            preparedStatement.setInt(1, em.getCed_emp());
+            preparedStatement.setInt(2, em.getN_personas());
+            preparedStatement.setInt(3, em.getN_baños());
+            preparedStatement.setInt(4, em.getN_habitaciones());
+            int Tipo = buscarTipo(em.getTipo());
+            preparedStatement.setInt(5, Tipo);
+            preparedStatement.setInt(6, em.getP_min());
+            preparedStatement.setString(7, em.getMascotas());
+            int CA = buscarCA(em.getCal_aire());
+            preparedStatement.setInt(8, CA);
+            int CIU = buscarCi(em.getCiudad());
+            System.out.println("qeqweqdsaddddddd" + CIU);
+            System.out.println("aaaaaaaaaaaaaaaaaaa" + em.getCiudad());
+            preparedStatement.setInt(9, CIU);
+            int BAR = buscarBa(em.getBarrio());
+            preparedStatement.setInt(10, BAR);
+            System.out.println("qeqweqdsaddddddd" + CIU);
+            preparedStatement.setString(11, em.getDireccion());
+            preparedStatement.executeUpdate();
+            System.out.println("Filas insertadas 1");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return r;
+    }
+
     public void deleteFot(String id) {
         String sql = "delete from fotos where Id_alojamiento=?";
+        System.out.println("uequeque" + id);
         try {
             con = cn.Conexion();
             ps = con.prepareStatement(sql);
             ps.setString(1, id);
             ps.executeUpdate();
+            System.out.println("cccccccccccccccccccc");
         } catch (Exception e) {
             System.out.println(equals(e.toString() + "iiiiiiiiiiiii"));
         }
@@ -295,11 +333,13 @@ public class AlojamientoDAO extends HttpServlet {
 
     public void deleteAl(String id) {
         String sql = "delete from alojamiento where Direccion=?";
+        System.out.println("uequeque" + id);
         try {
             con = cn.Conexion();
             ps = con.prepareStatement(sql);
             ps.setString(1, id);
             ps.executeUpdate();
+            System.out.println("ooooooooooooooooooooooooooo");
         } catch (Exception e) {
             System.out.println(equals(e.toString() + "ttttttttttttttttttt"));
         }

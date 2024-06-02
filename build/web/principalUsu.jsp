@@ -28,7 +28,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a style="margin-left: 10px; border: none" class="btn btn-outline-light" href="Controlador?menu=Usuario&accion=Listar" target="myFrame">Cuenta</a>
+                        <a style="margin-left: 10px; border: none" class="btn btn-outline-light" href="Controlador?menu=CuentaUsu&accion=Listar" target="myFrame">Cuenta</a>
                     </li>
                 </ul>
             </div>

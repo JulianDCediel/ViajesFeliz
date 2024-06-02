@@ -1,5 +1,6 @@
 package controlador;
 
+import com.oracle.wls.shaded.org.apache.bcel.generic.AALOAD;
 import jakarta.servlet.ServletContext;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -22,12 +23,14 @@ import modelo.AlojamientoDAO;
 import modelo.Empleado;
 import modelo.EmpleadoDAO;
 import modelo.Foto;
+import modelo.Nacionalidad;
 import modelo.Pago;
 import modelo.PagoDAO;
 import modelo.Reserva;
 import modelo.ReservasDAO;
 import modelo.Usuario;
 import modelo.UsuarioDAO;
+import modelo.encuesta;
 import modelo.reservasusu;
 import org.apache.jasper.tagplugins.jstl.core.ForEach;
 
@@ -137,6 +140,7 @@ public class Controlador extends HttpServlet {
                     case "Delete":
                         ide = Integer.parseInt(request.getParameter("id"));
                         cdao.delete(ide);
+                        System.out.println("aaaaaaaaaaaaaaaaaaaaaa");
                         request.getRequestDispatcher("Controlador?menu=Usuario&accion=Listar").forward(request, response);
                         break;
 
@@ -154,8 +158,11 @@ public class Controlador extends HttpServlet {
                         break;
                     case "Delete":
                         idd = request.getParameter("id");
+                        System.out.println("wwwwwwwwwwwwwwwwwwwwwwwww" + idd);
                         adao.deleteFot(idd);
+                        System.out.println("awwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
                         adao.deleteAl(idd);
+                        System.out.println("qqqqqqqqqqqqqqqqqqqqqqqqqddddddddddddddddddd");
                         request.getRequestDispatcher("Controlador?menu=Alojamiento&accion=Listar").forward(request, response);
                         break;
                 }
@@ -167,6 +174,36 @@ public class Controlador extends HttpServlet {
                     Alojamiento alo = adao.buscar(direc);
                     System.out.println("uuuuuuuuuuuuuuuuuuuu" + alo);
                     request.setAttribute("emp", alo);
+                } catch (Exception e) {
+                }
+                request.getRequestDispatcher("Controlador?menu=Alojamiento&accion=Listar").forward(request, response);
+            }
+            if (menu.equals("AlojamientoUPDF")) {
+                try {
+                    String Direccion = request.getParameter("direccion");
+                    int np = Integer.parseInt(request.getParameter("personas"));
+                    int nb = Integer.parseInt(request.getParameter("banos"));
+                    int nh = Integer.parseInt(request.getParameter("hab"));
+                    String t = request.getParameter("tipo");
+                    int prm = Integer.parseInt(request.getParameter("precio"));
+                    String ma = request.getParameter("mascotas");
+                    String ca = request.getParameter("ca");
+                    String ciu = request.getParameter("Ciudad");
+                    String barr = request.getParameter("Barrio");
+                    Alojamiento all = new Alojamiento();
+                    all.setDireccion(Direccion);
+                    all.setCed_emp(Validar.em.getCed());
+                    all.setN_personas(np);
+                    all.setN_baños(nb);
+                    all.setN_habitaciones(nh);
+                    all.setTipo(t);
+                    all.setP_min(prm);
+                    all.setMascotas(ma);
+                    all.setCal_aire(ca);
+                    all.setCiudad(ciu);
+                    all.setBarrio(barr);
+                    adao.editar(all);
+                    System.out.println("uuuuuuuuuuuuuuuuuuuu");
                 } catch (Exception e) {
                 }
                 request.getRequestDispatcher("Controlador?menu=Alojamiento&accion=Listar").forward(request, response);
@@ -361,13 +398,71 @@ public class Controlador extends HttpServlet {
                     int cantidad = Integer.parseInt(request.getParameter("faltante"));
                     Pago pag = new Pago(pago, cantidad, ced, Direccion);
                     pagdao.agregar(pag, idres);
+                    redao.updResfinn(idres);
                 } catch (Exception e) {
                     System.out.println("porqqqqqqqqqqqqqqqqqqqq" + e);
                 }
                 request.getRequestDispatcher("Controlador?menu=AlojamientoUsu&accion=Listar").forward(request, response);
             }
+            if (menu.equals("CuentaUsu")) {
+                switch (accion) {
+                    case "Listar":
+                        int cedd = Validar.us.getCed();
+                        Usuario cuen = cdao.buscar(cedd);
+
+                        System.out.println("qqqqqqqqqq" + cuen.getCed());
+                        request.setAttribute("Cliente", cuen);
+                        break;
+                }
+                request.getRequestDispatcher("cuenta.jsp").forward(request, response);
+            }
+            if (menu.equals("Informes")) {
+                switch (accion) {
+                    case "listar":
+
+                        break;
+                }
+                request.getRequestDispatcher("informes.jsp").forward(request, response);
+            }
+            if (menu.equals("EditarUsu")) {
+
+                try {
+                    String nombre = request.getParameter("nombres");
+                    String apell = request.getParameter("apellidos");
+                    int ced = Integer.parseInt(request.getParameter("cedula"));
+                    String dir = request.getParameter("Direccion");
+                    String corr = request.getParameter("email");
+                    int tele = Integer.parseInt(request.getParameter("telefono"));
+                    String nac = request.getParameter("nac");
+                    String pass = asegurarClave(request.getParameter("password"));
+                    Usuario cuen = new Usuario(ced, tele, nombre, apell, dir, corr, pass, nac);
+                    System.out.println("qeqweqweqweqw" + cuen.toString());
+                    Nacionalidad naci = cdao.buscarNac(cuen.getNaci());
+                    cdao.editarU(cuen, naci);
+                    cdao.editartele(cuen);
+                } catch (Exception e) {
+                    System.out.println("porqqqqqqqqqqqqqqqqqqqq" + e);
+                }
+                request.getRequestDispatcher("Controlador?menu=CuentaUsu&accion=Listar").forward(request, response);
+            }
+            if (menu.equals("calificar")) {
+                int idddd = Integer.parseInt(request.getParameter("id"));
+                request.setAttribute("idres", idddd);
+                encuesta en = redao.Busccalificacion(idddd);
+                request.setAttribute("cal", en);
+                System.out.println("ieuqwueiojhdklsahjdklashd" + en.getId());
+                request.getRequestDispatcher("encuesta.jsp").forward(request, response);
+            }
+            if (menu.equals("EnviarCalificar")) {
+                int idddd = Integer.parseInt(request.getParameter("id"));
+                String coment = request.getParameter("comen");
+                int num = Integer.parseInt(request.getParameter("calificacion"));
+                request.setAttribute("idres", idddd);
+                redao.calificacion(num, coment, idddd);
+                request.getRequestDispatcher("Controlador?menu=reservasUsu&accion=listar").forward(request, response);
+            }
         } catch (Exception e) {
-            System.out.println("qqqqqqqqqqqqqqqqqqqqqqq" + e);
+            System.out.println("popopopopopopop" + e);
             System.out.println(request.getParameter("accion"));
         }
     }

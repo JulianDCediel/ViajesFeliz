@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>MI CUENTA</title>
+        <title>Calificación</title>
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -35,18 +35,12 @@
             }
             .form-group input[type="text"],
             .form-group input[type="number"],
-            .form-group input[type="date"],
-            .form-group input[type="password"],
             .form-group select {
                 width: 100%;
                 padding: 10px;
                 border: 1px solid #ccc;
                 border-radius: 5px;
                 box-sizing: border-box;
-            }
-            .form-group input[type="text"][readonly],
-            .form-group input[type="number"][readonly] {
-                background-color: #e9ecef;
             }
             button {
                 width: 100%;
@@ -67,42 +61,28 @@
     </head>
     <body>
         <div class="container">
-            <h1>MIS DATOS</h1>
-            <form action="Controlador?menu=EditarUsu" method="POST">
+            <h1>Calificación</h1>
+            <form action="procesar_calificacion.jsp" method="POST">
                 <div class="form-group">
-                    <label>Cedula</label>
-                    <input type="number" value="${Cliente.getCed()}" name="cedula" class="form-control" readonly="">
+                    <label>ID</label>
+                    <input type="number" name="id" required readonly="">
                 </div>
                 <div class="form-group">
-                    <label>Nombres</label>
-                    <input type="text" value="${Cliente.getNom()}" name="nombres" class="form-control">
+                    <label>Opinion</label>
+                    <input type="text" name="opcion" required>
                 </div>
                 <div class="form-group">
-                    <label>Apellidos</label>
-                    <input type="text" value="${Cliente.getApell()}" name="apellidos" class="form-control">
+                    <label>Calificación (1-5)</label>
+                    <select name="calificacion" required>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label>Direccion</label>
-                    <input type="text" value="${Cliente.getDireccion()}" name="Direccion" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Telefono</label>
-                    <input type="text" value="${Cliente.getTel()}" name="telefono" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Correo</label>
-                    <input type="text" value="${Cliente.getCorreo()}" name="email" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Nacionalidad</label>
-                    <input type="text" value="${Cliente.getNaci()}" name="nac" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Contraseña</label>
-                    <input type="password" name="password" class="form-control">
-                </div>
-                <div class="form-group">
-                    <button type="submit">Editar</button>
+                    <button type="submit">Enviar</button>
                 </div>
             </form>
         </div>

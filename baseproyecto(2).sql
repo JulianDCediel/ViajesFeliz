@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 23, 2024 at 06:41 AM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Generation Time: Jun 02, 2024 at 08:45 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,31 @@ SET time_zone = "+00:00";
 --
 -- Database: `baseproyecto`
 --
+
+DELIMITER $$
+--
+-- Procedures
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `actualizarEstadoInicioReservas` ()   BEGIN
+    DECLARE fechaActual DATE;
+    SET fechaActual = CURDATE();
+
+UPDATE reserva r 
+JOIN detalle d ON r.Id = d.Id_reserva 
+JOIN pago p ON p.Id_reserva = r.Id 
+SET r.Id_estado = 4
+WHERE d.F_entrada >= CURDATE()
+AND r.Total != (SELECT SUM(p.Cantidad) FROM pago WHERE Id_reserva = r.Id);
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `actualizarEstadoReservas` ()   BEGIN
+    DECLARE fechaActual DATE;
+    SET fechaActual = CURDATE();
+
+UPDATE reserva r JOIN detalle d on d.Id_reserva = r.Id set r.Id_estado=3 WHERE  d.F_salida< fechaActual;
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -208,7 +233,8 @@ CREATE TABLE `detalle` (
 --
 
 INSERT INTO `detalle` (`Id`, `Id_alojamiento`, `Id_Usuario`, `N_personas`, `Mascotas`, `F_entrada`, `F_salida`, `Id_reserva`) VALUES
-(1, 'calle20norte', 777, 4, 'No', '2024-05-24', '2024-05-31', 1);
+(1, 'calle20norte', 777, 6, 'Si', '2024-06-03', '2024-06-10', 1),
+(2, 'calle20norte', 777, 5, 'No', '2024-06-12', '2024-06-19', 2);
 
 -- --------------------------------------------------------
 
@@ -229,8 +255,7 @@ CREATE TABLE `empleado` (
 --
 
 INSERT INTO `empleado` (`Id`, `Nombres`, `Apellidos`, `Correo`, `Contraseña`) VALUES
-(1028, 'Julian David', 'Cediel Gomez', 'david123@hotmail.com', 'pmWkWSBCL51Bfkhn79xPuKBKHz//H6B+mY6G9/eieuM='),
-(1029, 'Manuel Alejandro', 'Cediel Cruz', 'alejo123@hotmail.com', '1GcfUdZkpupfMFEuSHrwN4+Q8hAHPQfm7dyL3zUV/oc=');
+(1028, 'Julian David', 'Cediel Gomez', 'david123@hotmail.com', 'pmWkWSBCL51Bfkhn79xPuKBKHz//H6B+mY6G9/eieuM=');
 
 -- --------------------------------------------------------
 
@@ -263,7 +288,8 @@ CREATE TABLE `estado` (
 INSERT INTO `estado` (`Id`, `Estado`) VALUES
 (1, 'En proceso'),
 (2, 'Alquilado'),
-(3, 'Libre');
+(3, 'Finalizado'),
+(4, 'Cancelado');
 
 -- --------------------------------------------------------
 
@@ -325,7 +351,10 @@ CREATE TABLE `pago` (
 --
 
 INSERT INTO `pago` (`Id`, `Fecha`, `Cantidad`, `Id_reserva`, `Id_usuario`) VALUES
-(1, '2024-05-22', 52800, 1, 777);
+(1, '2024-06-02', 52800, 1, 777),
+(2, '2024-06-03', 211200, 1, 777),
+(3, '2024-06-02', 57600, 2, 777),
+(4, '2024-06-03', 230400, 2, 777);
 
 -- --------------------------------------------------------
 
@@ -366,7 +395,8 @@ CREATE TABLE `reserva` (
 --
 
 INSERT INTO `reserva` (`Id`, `Id_estado`, `Total`) VALUES
-(1, 1, 264000);
+(1, 2, 264000),
+(2, 2, 288000);
 
 -- --------------------------------------------------------
 
@@ -395,9 +425,8 @@ CREATE TABLE `tel_usu` (
 --
 
 INSERT INTO `tel_usu` (`Telefono`, `Id_usu`) VALUES
-(111, 777),
-(4444, 51920116),
-(31122, 1029140);
+(31122, 1029140),
+(311212, 777);
 
 -- --------------------------------------------------------
 
@@ -439,9 +468,8 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`Id`, `Nombres`, `Apellidos`, `Id_Nac`, `Direccion`, `Correo`, `Contraseña`) VALUES
-(777, 'Juan Carlos', 'Cediel Lopez', 3, 'calle36Bsur#3a60', 'aaa123@hotmail.com', 'pmWkWSBCL51Bfkhn79xPuKBKHz//H6B+mY6G9/eieuM='),
-(1029140, 'Marco', 'Rodriguez', 3, 'calle36Bsur#3a900', 'bbb@hotmail.com', 'jSPPbIboNKeqbt7VTCbOK7LnSQNTjGG91dIZeZerL3I='),
-(51920116, 'Mario', 'Alfonso', 3, 'carrera4#8b-sur', 'bbb123@hotmail.com', 'jSPPbIboNKeqbt7VTCbOK7LnSQNTjGG91dIZeZerL3I=');
+(777, 'Juan Alberto', 'Cediel casas', 3, 'calle36Bsur', 'aaa123@hotmail.com', 'pmWkWSBCL51Bfkhn79xPuKBKHz//H6B+mY6G9/eieuM='),
+(1029140, 'Marco', 'Rodriguez', 3, 'calle36Bsur#3a900', 'bbb@hotmail.com', 'jSPPbIboNKeqbt7VTCbOK7LnSQNTjGG91dIZeZerL3I=');
 
 --
 -- Indexes for dumped tables
@@ -575,19 +603,25 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT for table `detalle`
 --
 ALTER TABLE `detalle`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `encuesta`
+--
+ALTER TABLE `encuesta`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pago`
 --
 ALTER TABLE `pago`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `reserva`
 --
 ALTER TABLE `reserva`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
@@ -597,74 +631,82 @@ ALTER TABLE `reserva`
 -- Constraints for table `alojamiento`
 --
 ALTER TABLE `alojamiento`
-  ADD CONSTRAINT `alojamiento_ibfk_1` FOREIGN KEY (`Id_empleado`) REFERENCES `empleado` (`Id`),
-  ADD CONSTRAINT `alojamiento_ibfk_2` FOREIGN KEY (`Id_tipo`) REFERENCES `tipo` (`Id`),
-  ADD CONSTRAINT `alojamiento_ibfk_3` FOREIGN KEY (`Id_ciudad`) REFERENCES `ciudad` (`Id`),
-  ADD CONSTRAINT `alojamiento_ibfk_4` FOREIGN KEY (`Id_barrio`) REFERENCES `barrio` (`Id`),
-  ADD CONSTRAINT `alojamiento_ibfk_5` FOREIGN KEY (`Id_CAL_AIRE`) REFERENCES `cal_aire` (`Id`);
+  ADD CONSTRAINT `alojamiento_ibfk_1` FOREIGN KEY (`Id_empleado`) REFERENCES `empleado` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `alojamiento_ibfk_2` FOREIGN KEY (`Id_tipo`) REFERENCES `tipo` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `alojamiento_ibfk_3` FOREIGN KEY (`Id_ciudad`) REFERENCES `ciudad` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `alojamiento_ibfk_4` FOREIGN KEY (`Id_barrio`) REFERENCES `barrio` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `alojamiento_ibfk_5` FOREIGN KEY (`Id_CAL_AIRE`) REFERENCES `cal_aire` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `barrio`
 --
 ALTER TABLE `barrio`
-  ADD CONSTRAINT `barrio_ibfk_1` FOREIGN KEY (`Id_Ciudad`) REFERENCES `ciudad` (`Id`);
+  ADD CONSTRAINT `barrio_ibfk_1` FOREIGN KEY (`Id_Ciudad`) REFERENCES `ciudad` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `ciudad`
 --
 ALTER TABLE `ciudad`
-  ADD CONSTRAINT `ciudad_ibfk_1` FOREIGN KEY (`Id_region`) REFERENCES `region` (`Id`);
+  ADD CONSTRAINT `ciudad_ibfk_1` FOREIGN KEY (`Id_region`) REFERENCES `region` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `detalle`
 --
 ALTER TABLE `detalle`
-  ADD CONSTRAINT `detalle_ibfk_1` FOREIGN KEY (`Id_reserva`) REFERENCES `reserva` (`Id`),
-  ADD CONSTRAINT `detalle_ibfk_2` FOREIGN KEY (`Id_Usuario`) REFERENCES `usuario` (`Id`),
-  ADD CONSTRAINT `detalle_ibfk_3` FOREIGN KEY (`Id_alojamiento`) REFERENCES `alojamiento` (`Direccion`);
+  ADD CONSTRAINT `detalle_ibfk_1` FOREIGN KEY (`Id_reserva`) REFERENCES `reserva` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `detalle_ibfk_2` FOREIGN KEY (`Id_Usuario`) REFERENCES `usuario` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `detalle_ibfk_3` FOREIGN KEY (`Id_alojamiento`) REFERENCES `alojamiento` (`Direccion`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `encuesta`
 --
 ALTER TABLE `encuesta`
-  ADD CONSTRAINT `encuesta_ibfk_1` FOREIGN KEY (`Id_reserva`) REFERENCES `reserva` (`Id`);
+  ADD CONSTRAINT `encuesta_ibfk_1` FOREIGN KEY (`Id_reserva`) REFERENCES `reserva` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `fotos`
 --
 ALTER TABLE `fotos`
-  ADD CONSTRAINT `fotos_ibfk_1` FOREIGN KEY (`Id_alojamiento`) REFERENCES `alojamiento` (`Direccion`);
+  ADD CONSTRAINT `fotos_ibfk_1` FOREIGN KEY (`Id_alojamiento`) REFERENCES `alojamiento` (`Direccion`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `pago`
 --
 ALTER TABLE `pago`
-  ADD CONSTRAINT `pago_ibfk_1` FOREIGN KEY (`Id_reserva`) REFERENCES `reserva` (`Id`),
-  ADD CONSTRAINT `pago_ibfk_2` FOREIGN KEY (`Id_usuario`) REFERENCES `usuario` (`Id`);
+  ADD CONSTRAINT `pago_ibfk_1` FOREIGN KEY (`Id_reserva`) REFERENCES `reserva` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `pago_ibfk_2` FOREIGN KEY (`Id_usuario`) REFERENCES `usuario` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `reserva`
 --
 ALTER TABLE `reserva`
-  ADD CONSTRAINT `reserva_ibfk_1` FOREIGN KEY (`Id_estado`) REFERENCES `estado` (`Id`);
+  ADD CONSTRAINT `reserva_ibfk_1` FOREIGN KEY (`Id_estado`) REFERENCES `estado` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tel_emp`
 --
 ALTER TABLE `tel_emp`
-  ADD CONSTRAINT `tel_emp_ibfk_1` FOREIGN KEY (`Id_emp`) REFERENCES `empleado` (`Id`);
+  ADD CONSTRAINT `tel_emp_ibfk_1` FOREIGN KEY (`Id_emp`) REFERENCES `empleado` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tel_usu`
 --
 ALTER TABLE `tel_usu`
-  ADD CONSTRAINT `tel_usu_ibfk_1` FOREIGN KEY (`Id_usu`) REFERENCES `usuario` (`Id`);
+  ADD CONSTRAINT `tel_usu_ibfk_1` FOREIGN KEY (`Id_usu`) REFERENCES `usuario` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `usuario`
 --
 ALTER TABLE `usuario`
-  ADD CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`Id_Nac`) REFERENCES `nacionalidad` (`Id`);
+  ADD CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`Id_Nac`) REFERENCES `nacionalidad` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+DELIMITER $$
+--
+-- Events
+--
+CREATE DEFINER=`root`@`localhost` EVENT `actualizar_reservas_event` ON SCHEDULE EVERY 1 DAY STARTS '2024-06-02 00:33:00' ON COMPLETION NOT PRESERVE ENABLE DO CALL actualizarEstadoReservas()$$
+
+DELIMITER ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

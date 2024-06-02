@@ -46,9 +46,9 @@ public class UsuarioDAO {
         return cl;
     }
 
-    public Usuario buscar(String dni) {
+    public Usuario buscar(int dni) {
         Usuario cl = new Usuario();
-        String sql = "select * from cliente where Id=" + dni;
+        String sql = "SELECT * FROM usuario u JOIN tel_usu t on u.Id = t.Id_usu JOIN nacionalidad n on n.Id = u.Id_Nac where u.Id=" + dni;
 
         try {
             con = cn.Conexion();
@@ -56,13 +56,14 @@ public class UsuarioDAO {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                cl.setCed(rs.getInt(1));
-                cl.setNom(rs.getString(2));
-                cl.setApell(rs.getString(3));
-                cl.setDireccion(rs.getString(4));
-                cl.setNaci(rs.getString(5));
-                cl.setCorreo(rs.getString(6));
-                cl.setContra(rs.getString(7));
+                cl.setCed(rs.getInt("u.Id"));
+                cl.setNom(rs.getString("u.Nombres"));
+                cl.setApell(rs.getString("u.Apellidos"));
+                cl.setDireccion(rs.getString("u.Direccion"));
+                cl.setNaci(rs.getString("n.Nombre_pais"));
+                cl.setCorreo(rs.getString("u.Correo"));
+                cl.setContra(rs.getString("u.Contraseña"));
+                cl.setTel(rs.getInt("t.Telefono"));
             }
         } catch (Exception e) {
         }
@@ -122,7 +123,7 @@ public class UsuarioDAO {
                 tel = rs.getLong("Telefono");
             }
         } catch (Exception e) {
-            System.out.println("bbbbbbbbbbbbbbbbbbb" +e);
+            System.out.println("bbbbbbbbbbbbbbbbbbb" + e);
         }
 
         return tel;
@@ -142,7 +143,20 @@ public class UsuarioDAO {
         }
         return r;
     }
+    public int editartele(Usuario telefono) {
+        String sql = "UPDATE tel_usu SET Telefono=? WHERE id_usu =?";
 
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, telefono.getTel());
+            ps.setInt(2, telefono.getCed());
+
+            ps.executeUpdate();
+        } catch (Exception e) {
+        }
+        return r;
+    }
     public List listar() {
         String sql = "select u.*,n.*,t.* from usuario u join nacionalidad n on u.Id_Nac = n.Id join tel_usu t on u.Id = t.id_usu";
         List<Usuario> lista = new ArrayList();
@@ -189,6 +203,26 @@ public class UsuarioDAO {
         return r;
     }
 
+    public int editarU(Usuario cl, Nacionalidad n) {
+        String sql = "UPDATE usuario SET Nombres=?,Apellidos=?,Id_Nac=?,Direccion=?,Correo=?,Contraseña=? where Id=?";
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+
+            ps.setString(1, cl.getNom());
+            ps.setString(2, cl.getApell());
+            ps.setInt(3, n.getId());
+            ps.setString(4, cl.getDireccion());
+            ps.setString(5, cl.getCorreo());
+            ps.setString(6, cl.getContra());
+            ps.setInt(7, cl.getCed());
+            ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" + e);
+        }
+        return r;
+    }
+
     public Usuario listarId(int id) {
         Usuario em = new Usuario();
         Nacionalidad n = new Nacionalidad();
@@ -223,6 +257,7 @@ public class UsuarioDAO {
             ps = con.prepareStatement(sql);
             ps.executeUpdate();
         } catch (Exception e) {
+            System.out.println("aaaadasd" +e);
         }
     }
 }

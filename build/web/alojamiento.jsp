@@ -134,7 +134,7 @@
                                 <a href="Controlador?menu=AlojamientoUPD&id=${em.getDenco()}" class="btn btn-sm btn-warning"><i class="fa-regular fa-pen-to-square"></i>  CargarDatos</a>
                                 <a href="#" class="btn btn-sm btn-warning"data-toggle="modal" data-target="#modal2"><i class="fa-regular fa-pen-to-square"></i> Editar</a>
                                 <a href="#" class="btn btn-sm btn-warning"data-toggle="modal" data-target="#modal4"><i class="fa-regular fa-pen-to-square"></i>Agregar Foto</a>
-                                <a href="#" class="btn btn-sm btn-danger"data-toggle="modal" data-target="#modal3"><i class="fa-regular fa-trash-can"></i>Eliminar</a>
+                                <a class="btn btn-danger" href="Controlador?menu=Alojamiento&accion=Delete&id=${em.getDenco()}"><i class="fa-regular fa-trash-can"></i>Eliminar</a>
                             </td>
                         </tr>
                     </c:forEach>
@@ -151,10 +151,10 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="Controlador?menu=AlojamientoUPD" method="POST">
+                            <form action="Controlador?menu=AlojamientoUPDF" method="POST">
                                 <div class="mb-3">
                                     <label class="form-label">Direccion:</label>
-                                    <input type="text" name="direccion" id="direccion" class="form-control" required="" value=${emp.getDireccion()}>
+                                    <input type="text" name="direccion" id="direccion" class="form-control" readonly="" required="" value=${emp.getDireccion()}>
                                 </div> 
                                 <div class="mb-3">
                                     <label class="form-label">Numero Personas:</label>
@@ -194,7 +194,15 @@
                                         <option value="Ambos">Ambos</option>
                                         <option value="Ninguno">Ninguno</option>
                                     </select>
-                                </div>               
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Ciudad</label>
+                                    <input type="text" name="Ciudad" id="Ciudad" readonly="" class="form-control" value="${emp.getCiudad()}" required="">
+                                </div> 
+                                <div class="mb-3">
+                                    <label class="form-label">Barrio</label>
+                                    <input type="text" name="Barrio" id="Barrio" readonly="" class="form-control" value="${emp.getBarrio()}" required="">
+                                </div> 
                                 <div>
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                                     <button type="submit" class="btn btn-primary"><i class="fa-regular fa-floppy-disk"></i> Guardar</button>
@@ -202,26 +210,6 @@
                             </form>
                         </div>
                         <div class="modal-footer">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Modal3 -->
-            <div class="modal fade" id="modal3" tabindex="-1" role="dialog" aria-labelledby="eliminarmodal" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modal3">ElIMINAR ALOJAMIENTO</h5>
-                            <button type="button" class="close" data-dismiss="modal3" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            ¿DESEAS ELIMINAR EL ALOJAMIENTO?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                            <a class="btn btn-danger" href="Controlador?menu=Alojamiento&accion=Delete&id=${em.getDenco()}">Delete</a>
                         </div>
                     </div>
                 </div>

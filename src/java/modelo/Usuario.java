@@ -85,4 +85,9 @@ public class Usuario {
         this.contra = contra;
     }
 
+    @Override
+    public String toString() {
+        return "Usuario{" + "ced=" + ced + ", tel=" + tel + ", nom=" + nom + ", apell=" + apell + ", direccion=" + direccion + ", correo=" + correo + ", contra=" + contra + ", naci=" + naci + '}';
+    }
+
 }
