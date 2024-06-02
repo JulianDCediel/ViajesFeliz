@@ -73,7 +73,7 @@
                     <p><strong>Mascotas:</strong> ${em.getMascotas()}</p>
                     <p><strong>Total:</strong> ${em.getTotal()}</p>
                     <p><strong>Cantidad Pagada:</strong> ${em.getCantP()}</p>
-                    <c:if test="${em.getCantP() < em.getTotal()}">
+                    <c:if test="${em.getCantP() < em.getTotal() && em.getEstado() != 'Cancelado'}">
                         <form action="" method="post">
                             <a class="btn btn-warning" href="Controlador?menu=reservarFin&id=${em.getIdRes()}">PAGAR</a>
                         </form>
@@ -92,9 +92,11 @@
                         // Comparar las fechas
                         if (fechaActual.after(fechaFin)) {
                     %>
-                    <form action="Controlador?menu=calificar&id=${em.getIdRes()}" method="post">
-                        <button class="btn btn-warning" type="submit">Calificar</button>
-                    </form>
+                    <c:if test="${em.getEstado() != 'Cancelado'}">
+                        <form action="Controlador?menu=calificar&id=${em.getIdRes()}" method="post">
+                            <button class="btn btn-warning" type="submit">Calificar</button>
+                        </form>
+                    </c:if>
                     <%
                         }
                     %>

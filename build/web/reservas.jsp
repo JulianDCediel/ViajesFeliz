@@ -69,19 +69,21 @@
         </style>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-                var today = new Date().toISOString().split('T')[0];
+                var tprob = new Date();
+                tprob.setDate(tprob.getDate() + 1);
+                var today = tprob.toISOString().split('T')[0];
                 var fechaInicio = document.getElementById('fecha_inicio');
                 var fechaFin = document.getElementById('fecha_fin');
 
                 fechaInicio.setAttribute('min', today);
 
                 var fechasOcupadas = [
-                    <c:forEach var="reserva" items="${reservas}">
-                        {
-                            f_i: '${reserva.f_i}',
-                            f_f: '${reserva.f_f}'
-                        }<c:if test="${!status.last}">,</c:if>
-                    </c:forEach>
+            <c:forEach var="reserva" items="${reservas}">
+                {
+                f_i: '${reserva.f_i}',
+                        f_f: '${reserva.f_f}'
+                }<c:if test="${!status.last}">,</c:if>
+            </c:forEach>
                 ];
 
                 function addDays(date, days) {
@@ -239,5 +241,5 @@
                 <button type="submit">Reservar</button>
             </form>
         </div>
-    </body>
+         </body>
 </html>

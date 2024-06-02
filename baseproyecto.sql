@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 02, 2024 at 08:02 PM
+-- Generation Time: Jun 02, 2024 at 09:32 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -33,8 +33,8 @@ UPDATE reserva r
 JOIN detalle d ON r.Id = d.Id_reserva 
 JOIN pago p ON p.Id_reserva = r.Id 
 SET r.Id_estado = 4
-WHERE d.F_entrada >= CURDATE()
-AND r.Total != (SELECT SUM(p.Cantidad) FROM pago WHERE Id_reserva = r.Id);
+WHERE d.F_entrada <= CURDATE()
+AND r.Total != (SELECT SUM(p2.Cantidad) FROM pago p2 WHERE p2.Id_reserva = r.Id);
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `actualizarEstadoReservas` ()   BEGIN
@@ -234,7 +234,8 @@ CREATE TABLE `detalle` (
 
 INSERT INTO `detalle` (`Id`, `Id_alojamiento`, `Id_Usuario`, `N_personas`, `Mascotas`, `F_entrada`, `F_salida`, `Id_reserva`) VALUES
 (1, 'calle20norte', 777, 6, 'Si', '2024-06-03', '2024-06-10', 1),
-(2, 'calle20norte', 777, 5, 'No', '2024-06-12', '2024-06-19', 2);
+(2, 'calle20norte', 777, 5, 'No', '2024-06-12', '2024-06-19', 2),
+(3, 'calle36Bsur#3A60', 51815, 5, 'No', '2024-06-02', '2024-06-09', 3);
 
 -- --------------------------------------------------------
 
@@ -354,7 +355,8 @@ INSERT INTO `pago` (`Id`, `Fecha`, `Cantidad`, `Id_reserva`, `Id_usuario`) VALUE
 (1, '2024-06-02', 52800, 1, 777),
 (2, '2024-06-03', 211200, 1, 777),
 (3, '2024-06-02', 57600, 2, 777),
-(4, '2024-06-03', 230400, 2, 777);
+(4, '2024-06-03', 230400, 2, 777),
+(5, '2024-06-02', 44000, 3, 51815);
 
 -- --------------------------------------------------------
 
@@ -396,7 +398,8 @@ CREATE TABLE `reserva` (
 
 INSERT INTO `reserva` (`Id`, `Id_estado`, `Total`) VALUES
 (1, 2, 264000),
-(2, 2, 288000);
+(2, 2, 288000),
+(3, 4, 220000);
 
 -- --------------------------------------------------------
 
@@ -426,6 +429,7 @@ CREATE TABLE `tel_usu` (
 
 INSERT INTO `tel_usu` (`Telefono`, `Id_usu`) VALUES
 (31122, 1029140),
+(310862, 51815),
 (311212, 777);
 
 -- --------------------------------------------------------
@@ -469,6 +473,7 @@ CREATE TABLE `usuario` (
 
 INSERT INTO `usuario` (`Id`, `Nombres`, `Apellidos`, `Id_Nac`, `Direccion`, `Correo`, `Contraseña`) VALUES
 (777, 'Juan Alberto', 'Cediel casas', 3, 'calle36Bsur', 'aaa123@hotmail.com', 'pmWkWSBCL51Bfkhn79xPuKBKHz//H6B+mY6G9/eieuM='),
+(51815, 'mario', 'fernando', 3, 'carrera7norte', 'jdc@gmail.com', '6vidtxCEcNw/ayPqkGGCZLPo+LYUU3FmfEBV6cXOn1I='),
 (1029140, 'Marco', 'Rodriguez', 3, 'calle36Bsur#3a900', 'bbb@hotmail.com', 'jSPPbIboNKeqbt7VTCbOK7LnSQNTjGG91dIZeZerL3I=');
 
 --
@@ -603,7 +608,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT for table `detalle`
 --
 ALTER TABLE `detalle`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `encuesta`
@@ -615,13 +620,13 @@ ALTER TABLE `encuesta`
 -- AUTO_INCREMENT for table `pago`
 --
 ALTER TABLE `pago`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `reserva`
 --
 ALTER TABLE `reserva`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
