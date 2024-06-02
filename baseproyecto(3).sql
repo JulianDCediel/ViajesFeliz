@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 02, 2024 at 08:45 AM
+-- Generation Time: Jun 02, 2024 at 08:02 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -41,7 +41,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `actualizarEstadoReservas` ()   BEGI
     DECLARE fechaActual DATE;
     SET fechaActual = CURDATE();
 
-UPDATE reserva r JOIN detalle d on d.Id_reserva = r.Id set r.Id_estado=3 WHERE  d.F_salida< fechaActual;
+UPDATE reserva r JOIN detalle d on d.Id_reserva = r.Id set r.Id_estado=3 WHERE  d.F_salida< fechaActual AND r.Id_estado != 4;
 END$$
 
 DELIMITER ;
